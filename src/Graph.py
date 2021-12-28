@@ -1,7 +1,7 @@
 import json
 
 from src.Node import Node
-from src.GraphAlgo import *
+# from src.GraphAlgo import *
 
 class Graph:
     def __init__(self):
@@ -38,7 +38,7 @@ class Graph:
                 in_edges.update({curr_src_key: self.Edges[curr_src_key][id1]})  # {src: {dest: weight}}
         return in_edges
 
-    def all_out_edges_of_node(self, id1: int):
+    def outgoingEdgesFromNode(self, id1: int):
         """get id of node and return dictionary of all edges OUT from it{src:{dest:weight}}"""
         try:
             return self.Edges[id1]

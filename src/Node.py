@@ -33,9 +33,63 @@ class Node:
             if Node.max_value.getZ() > self.z:
                 Node.max_value.setZ(self.z)
 
+        self.distance = sys.maxsize  # set distance to infinity for all nodes
+        self.adjacent = {}  # {neighbor:weight}
+        self.visited = False  # Mark all nodes as unvisited
+        self.previous = None
+
+    def __str__(self):
+        """toString function"""
+        return str("id: " + str(self.id))
+
     def getID(self) -> int:
         """get id of node"""
         return self.id
 
     def getPos(self) -> Point:
         return self.id
+
+    def get_visited(self):
+        """get visited to see the status of the visited attribute of the node"""
+        return self.visited
+
+    def get_distance(self):
+        return self.distance
+
+    def get_weight(self, neighbor):
+        return self.adjacent[neighbor]
+
+    def set_previous(self, prev):
+        """node1.set_previous(cur) -> set cur as previous node of node1"""
+        self.previous = prev
+
+    def set_distance(self, dist):
+        self.distance = dist
+
+    def get_previous(self, current):
+        """get previous node of given node"""
+        return self.previous
+
+    def set_visited(self):
+        """initializes attribute as defoltive true boolean value"""
+        self.visited = True
+
+    # for using heapq.heapify in GraphAlgo-we will define comparators
+
+    def __eq__(self, other):
+        return self.get_id() == other.get_id
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def __lt__(self, other):
+        return self.id < other.id
+
+    def __gt__(self, other):
+        return self.id > other.id
+
+    def __le__(self, other):
+        return (self < other) or (self == other)
+
+    def __ge__(self, other):
+        return (self > other) or (self == other)
