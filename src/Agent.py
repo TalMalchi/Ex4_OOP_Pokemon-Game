@@ -45,7 +45,6 @@ class Agent:
 
     def setPath(self, path):
         """Set the path the agent need to moove on to get the pokemon as fast as he can"""
-
         self.path = path
 
     def getPath(self):
@@ -55,10 +54,10 @@ class Agent:
     # def GetAgentsList(self):
     #     """Get a list of all the Agents"""
 
-    def is_moving(self):
+    def is_moving(self):  # TODO
         """If the agent is moving on edges"""
 
-    def get_current_edge(self):
+    def get_current_edge(self):  # TODO
         """retur the edge that the agent is currently on"""
 
     def loadAgent(self, file_name) -> bool:
