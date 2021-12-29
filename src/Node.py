@@ -42,6 +42,9 @@ class Node:
         """toString function"""
         return str("id: " + str(self.id))
 
+    def __hash__(self):
+        return hash(id(self))
+
     def getID(self) -> int:
         """get id of node"""
         return self.id
@@ -77,13 +80,13 @@ class Node:
     # for using heapq.heapify in GraphAlgo-we will define comparators
 
     def __eq__(self, other):
-        return self.get_id() == other.get_id
+        return self.id == other.id
 
     def __ne__(self, other):
         return not (self == other)
 
     def __lt__(self, other):
-        return self.id < other.id
+        return self.id < other.get_id()
 
     def __gt__(self, other):
         return self.id > other.id

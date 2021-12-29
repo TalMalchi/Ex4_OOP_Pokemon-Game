@@ -1,34 +1,29 @@
-from GraphAlgo import *
-from Pokemon import Pokemon
+import json
+from types import SimpleNamespace
 
-
-def check0():
-    """
-    This function tests the naming (main methods of the DiGraph class, as defined in GraphInterface.
-    :return:
-    """
-    g = Graph()  # creates an empty directed graph
-    for n in range(4):
-        g.addNode(n)
-    g.addEdge(0, 1, 1)
-    g.addEdge(1, 0, 1.1)
-    g.addEdge(1, 2, 1.3)
-    g.addEdge(2, 3, 1.1)
-    g.addEdge(1, 3, 1.9)
-    g.removeEdge(1, 3)
-    g.addEdge(1, 3, 10)
-    print(g)  # prints the __repr__ (func output)
-    print(g.getAllNodes())  # prints a dict with all the graph's vertices.
-    print(g.incomingEdgesToNode(1))
-    print(g.outgoingEdgesFromNode(1))
-    print(shortestPath(g, 0, 3))
+import networkx as nx
+from src.Node import Node
+from src.Point import Point
+from src.client import *
+from DataInput import *
 
 
 if __name__ == '__main__':
-    p = Pokemon()
-    jsonTemp = json.loads(
-        '{"Pokemons": [{"Pokemon": {"value": 5.0,"type": -1,"pos": "35.197656770719604,32.10191878639921,0.0"}}]}')
-    p.loadPokemon(jsonTemp['Pokemons'][0])
+    # graph = nx.DiGraph()
+    # graph.add_node(Node(1, Point(0,2,4)))
+    # node = graph.nodes.data()
+    # print(graph)
 
-# agent= Agent
-# agent.loadAgent("data/pagentTest.json")
+    # default port
+    PORT = 6666
+    # server host (default localhost 127.0.0.1)
+    HOST = '127.0.0.1'
+    client = Client()
+    client.start_connection(HOST, PORT)
+    pokLst = loadAllPokemons(client.get_pokemons())
+    agents = json.loads(client.get_agents(),
+                        object_hook=lambda d: SimpleNamespace(**d)).Agents
+    string = client.get_agents()
+    agentLst = loadAllAgents(client.get_agents())
+    graph_json = client.get_graph()
+    print()

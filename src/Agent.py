@@ -1,9 +1,14 @@
 import json
 
+from src.Point import Point
+
 
 class Agent:
 
-    def __init__(self, id, value, src, dest, speed, pos):
+    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,
+                 pos: Point = Point(), jsonStr=None):
+        if jsonStr is not None:
+            self.parseAgent(jsonStr)
         self.id = id
         self.value = value  # how many did the agent eat till now
         self.dest = dest
@@ -12,6 +17,15 @@ class Agent:
         self.pos = pos
         self.path = []
         self.all_agent = []
+
+    def parseAgent(self, jsonStr):
+        """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
+        self.id = jsonStr['Agent']['id']
+        self.value = jsonStr['Agent']['value']
+        self.src = jsonStr['Agent']['src']
+        self.dest = jsonStr['Agent']['dest']
+        self.speed = jsonStr['Agent']['speed']
+        self.pos = Point(jsonStr['Agent']['speed'])
 
     def getId(self):
         """get the id of the agent"""
@@ -59,41 +73,3 @@ class Agent:
 
     def get_current_edge(self):  # TODO
         """retur the edge that the agent is currently on"""
-
-    def loadAgent(self, file_name) -> bool:
-        try:
-            with open(file_name) as f:
-                data = f.read()
-            agent = json.loads(data)
-            for i in agent['Agents']:
-                self.all_agent.append(Agent(i['id'], i['value'],i['src'],i['dest'], i['speed'], i['pos']))
-            # self.id = agent['id']
-            # self.value = agent['value']
-            # self.src = agent['src']
-            # self.dest = agent['dest']
-            # self.speed = agent['speed']
-            # self.pos = agent['pos']
-
-        except IOError as e:
-            return False
-        return True
-
-    """
-
-                "Agents":[
-                    {
-                        "Agent":
-                        {
-                            "id":0,
-                            "value":0.0,
-                            "src":0,
-                            "dest":1,
-                            "speed":1.0,
-                            "pos":"35.18753053591606,32.10378225882353,0.0"
-                        }
-                    }
-                ]
-
-            """
-
-

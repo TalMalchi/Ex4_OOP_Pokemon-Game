@@ -5,9 +5,9 @@ from src.Point import Point
 
 class Pokemon:
 
-    def __init__(self, value=0, type: int = 0, pos: Point = Point(), jsonObj=None):
-        if jsonObj is not None:
-            self.loadPokemon(jsonObj)
+    def __init__(self, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
+        if jsonStr is not None:
+            self.parsePokemon(jsonStr)
         else:
             self.value = value  # double value
             self.type = type  # -1 or 1
@@ -42,11 +42,11 @@ class Pokemon:
         """find the distance from pokemon to node dest """
         return math.dist(self.pos, self.node_dest.pos)
 
-    def loadPokemon(self, jsonObj):
+    def parsePokemon(self, jsonObj):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
         self.value = jsonObj['Pokemon']['value']
         self.type = jsonObj['Pokemon']['type']
-        Point(string=jsonObj['Pokemon']['pos'])
+        self.pos = Point(string=jsonObj['Pokemon']['pos'])
     # {
     #   "Pokemons": [
     #     {
