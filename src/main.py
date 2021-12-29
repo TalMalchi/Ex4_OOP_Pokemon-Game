@@ -21,8 +21,7 @@ if __name__ == '__main__':
     client = Client()
     client.start_connection(HOST, PORT)
     pokLst = loadAllPokemons(client.get_pokemons())
-    agents = json.loads(client.get_agents(),
-                        object_hook=lambda d: SimpleNamespace(**d)).Agents
+    agents = client.get_agents()
     string = client.get_agents()
     agentLst = loadAllAgents(client.get_agents())
     graph_json = client.get_graph()
