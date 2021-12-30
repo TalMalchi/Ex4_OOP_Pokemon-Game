@@ -22,7 +22,6 @@ def assignAgentSrcNodes() -> None:
             client.add_agent("{\"id\":" + str(rand) + "}")
 
 
-
 if __name__ == '__main__':
     # default port
     PORT = 6666
