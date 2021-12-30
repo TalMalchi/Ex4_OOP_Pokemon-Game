@@ -1,10 +1,13 @@
+import math
+
+
 class Point:
-    def __init__(self, x=0, y=0, z=0, string: str = None):
+    def __init__(self, x: float = 0, y: float = 0, z: float = 0, string: str = None):
         if string is not None:
             lst = string.split(',')
-            self.x = lst[0]
-            self.y = lst[1]
-            self.z = lst[2]
+            self.x = float(lst[0])
+            self.y = float(lst[1])
+            self.z = float(lst[2])
         else:
             self.x = x
             self.y = y
@@ -27,3 +30,6 @@ class Point:
 
     def setZ(self, z):
         self.z = z
+
+    def distance(self, p1) -> float:
+        return math.sqrt((self.x - p1.x) ** 2 + (self.y - p1.y) ** 2)

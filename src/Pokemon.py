@@ -1,11 +1,13 @@
 import math
 
+import networkx as nx
+
 from src.Point import Point
 
 
 class Pokemon:
 
-    def __init__(self, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
+    def __init__(self, graph: nx.DiGraph, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
         if jsonStr is not None:
             self.parsePokemon(jsonStr)
         else:
@@ -14,6 +16,7 @@ class Pokemon:
             self.pos = pos  # Location Class
         self.node_src = None
         self.node_dest = None
+        self.findSrcDest(graph)
 
     def getValue(self):
         return self.value
@@ -34,27 +37,23 @@ class Pokemon:
     def setPos(self, pos):
         self.pos = pos
 
-    def find_dist_from_src(self):
-        """find the distance from pokemon to node src """
-        return math.dist(self.pos, self.node_src.pos)
-
-    def find_dist_from_src(self):
-        """find the distance from pokemon to node dest """
-        return math.dist(self.pos, self.node_dest.pos)
-
     def parsePokemon(self, jsonObj):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
         self.value = jsonObj['Pokemon']['value']
         self.type = jsonObj['Pokemon']['type']
         self.pos = Point(string=jsonObj['Pokemon']['pos'])
-    # {
-    #   "Pokemons": [
-    #     {
-    #       "Pokemon": {
-    #         "value": 5.0,
-    #         "type": -1,
-    #         "pos": "35.197656770719604,32.10191878639921,0.0"
-    #       }
-    #     }
-    #   ]
-    # }
+
+    def findSrcDest(self, graph: nx.DiGraph):
+        for src, dest, weight in graph.edges(data="weight"):
+            distSrcSelf = graph.nodes[src]['pos'].distance(self.pos)
+            distSelfDest = graph.nodes[dest]['pos'].distance(self.pos)
+            distEdge = graph.nodes[src]['pos'].distance(graph.nodes[dest]['pos'])
+            if distSrcSelf + distSelfDest == distEdge:
+                if dest > src and self.type > 0:
+                    self.node_src = src
+                    self.node_dest = dest
+                    break
+                elif dest < src and self.type < 0:
+                    self.node_src = src
+                    self.node_dest = dest
+                    break

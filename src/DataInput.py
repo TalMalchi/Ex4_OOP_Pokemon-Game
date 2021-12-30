@@ -8,7 +8,7 @@ from src.Point import Point
 
 def loadGraph(stringGraph):
     jsonGraph = json.loads(stringGraph)
-    graph = nx.Graph()
+    graph = nx.DiGraph()
     for node in jsonGraph["Nodes"]:
         graph.add_node(node["id"], pos=Point(string=node["pos"]))
 
@@ -18,11 +18,11 @@ def loadGraph(stringGraph):
     return graph
 
 
-def loadAllPokemons(pokemons):
+def loadAllPokemons(pokemons, graph: nx.DiGraph):
     pokLst = []
     jsonTemp = json.loads(pokemons)
     for i in range(len(jsonTemp['Pokemons'])):
-        pokLst.append(Pokemon(jsonStr=jsonTemp['Pokemons'][i]))
+        pokLst.append(Pokemon(graph, jsonStr=jsonTemp['Pokemons'][i]))
     return pokLst
 
 
