@@ -21,8 +21,9 @@ if __name__ == '__main__':
     client = Client()
     client.start_connection(HOST, PORT)
     pokLst = loadAllPokemons(client.get_pokemons())
-    agents = client.get_agents()
-    string = client.get_agents()
+    graph = loadGraph(client.get_graph())
+
+    client.add_agent("{\"id\":0}")
+    client.start()
     agentLst = loadAllAgents(client.get_agents())
-    graph_json = client.get_graph()
     print()
