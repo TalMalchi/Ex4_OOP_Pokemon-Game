@@ -24,11 +24,8 @@ def check0():
     print(shortestPath(g, 0, 3))
 
 
-if __name__ == '__main__':
-    p = Pokemon()
-    jsonTemp = json.loads(
-        '{"Pokemons": [{"Pokemon": {"value": 5.0,"type": -1,"pos": "35.197656770719604,32.10191878639921,0.0"}}]}')
-    p.loadPokemon(jsonTemp['Pokemons'][0])
+# if __name__ == '__main__':
+
 
 # agent= Agent
 # agent.loadAgent("data/pagentTest.json")

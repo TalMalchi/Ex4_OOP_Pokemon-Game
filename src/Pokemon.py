@@ -1,8 +1,8 @@
-import math
-
 import networkx as nx
 
 from src.Point import Point
+
+EPS = 0.000001
 
 
 class Pokemon:
@@ -39,8 +39,8 @@ class Pokemon:
 
     def parsePokemon(self, jsonObj):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
-        self.value = jsonObj['Pokemon']['value']
-        self.type = jsonObj['Pokemon']['type']
+        self.value = float(jsonObj['Pokemon']['value'])
+        self.type = int(jsonObj['Pokemon']['type'])
         self.pos = Point(string=jsonObj['Pokemon']['pos'])
 
     def findSrcDest(self, graph: nx.DiGraph):
@@ -48,7 +48,7 @@ class Pokemon:
             distSrcSelf = graph.nodes[src]['pos'].distance(self.pos)
             distSelfDest = graph.nodes[dest]['pos'].distance(self.pos)
             distEdge = graph.nodes[src]['pos'].distance(graph.nodes[dest]['pos'])
-            if distSrcSelf + distSelfDest == distEdge:
+            if abs(distSrcSelf + distSelfDest - distEdge) < EPS:
                 if dest > src and self.type > 0:
                     self.node_src = src
                     self.node_dest = dest

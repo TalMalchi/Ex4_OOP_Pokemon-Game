@@ -9,23 +9,24 @@ class Agent:
                  pos: Point = Point(), jsonStr=None):
         if jsonStr is not None:
             self.parseAgent(jsonStr)
-        self.id = id
-        self.value = value  # how many did the agent eat till now
-        self.dest = dest
-        self.src = src
-        self.speed = speed
-        self.pos = pos
+        else:
+            self.id = id
+            self.value = value  # how many did the agent eat till now
+            self.dest = dest
+            self.src = src
+            self.speed = speed
+            self.pos = pos
         self.path = []
         self.all_agent = []
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
-        self.id = jsonStr['Agent']['id']
-        self.value = jsonStr['Agent']['value']
-        self.src = jsonStr['Agent']['src']
-        self.dest = jsonStr['Agent']['dest']
-        self.speed = jsonStr['Agent']['speed']
-        self.pos = Point(jsonStr['Agent']['speed'])
+        self.id = jsonStr['id']
+        self.value = jsonStr['value']
+        self.src = jsonStr['src']
+        self.dest = jsonStr['dest']
+        self.speed = jsonStr['speed']
+        self.pos = Point(jsonStr['speed'])
 
     def getId(self):
         """get the id of the agent"""
