@@ -14,8 +14,8 @@ class Pokemon:
             self.value = value  # double value
             self.type = type  # -1 or 1
             self.pos = pos  # Location Class
-        self.node_src = None
-        self.node_dest = None
+        self.node_src = None  # ID of node
+        self.node_dest = None  # ID of node
         self.findSrcDest(graph)
 
     def parsePokemon(self, jsonObj):
@@ -43,6 +43,9 @@ class Pokemon:
         return "value: " + str(self.value) + ", type: " + str(self.type) + ", pos: " + str(self.pos) + "edge: (" + str(
             self.node_src) + ", " + str(self.node_dest) + ")"
 
+    def __repr__(self):
+        return self.__str__()
+
     def getValue(self):
         return self.value
 
@@ -61,3 +64,9 @@ class Pokemon:
 
     def setPos(self, pos):
         self.pos = pos
+
+    def getNodeDest(self):
+        return self.node_dest
+
+    def getNodeSrc(self):
+        return self.node_src

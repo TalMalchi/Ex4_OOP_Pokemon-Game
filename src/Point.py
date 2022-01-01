@@ -16,6 +16,9 @@ class Point:
     def __str__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
+    def __repr__(self):
+        return self.__str__()
+
     def getX(self):
         return self.x
 

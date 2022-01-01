@@ -30,6 +30,9 @@ class Agent:
         return "{id: " + str(self.id) + ", value: " + str(self.value) + ", src: " + str(self.src) + ", dest: " + str(
             self.dest) + ", speed: " + str(self.speed) + ", pos: " + str(self.pos) + ", path: " + str(self.path)
 
+    def __repr__(self):
+        return self.__str__()
+
     def getId(self):
         """get the id of the agent"""
         return self.id
@@ -60,9 +63,12 @@ class Agent:
     def setDest(self, dest):
         self.dest = dest
 
-    def setPath(self, path):
+    def addToPath(self, nodeId):
         """Set the path the agent need to moove on to get the pokemon as fast as he can"""
-        self.path = path
+        self.path.append(nodeId)
+
+    def getPathHead(self):
+        return self.path[0]
 
     def getPath(self):
         """Get the path the agent need to moove on to get the pokemon as fast as he can"""

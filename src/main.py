@@ -1,9 +1,5 @@
-import random
-
 from DataInput import *
-from src.client import *
 from src.Algorithms import *
-
 
 if __name__ == '__main__':
     # default port
@@ -16,9 +12,13 @@ if __name__ == '__main__':
     pokLst = loadAllPokemons(client.get_pokemons(), graph)  # load Pokemon list
     caseInfo = json.loads(client.get_info())
     numOfAgents = caseInfo['GameServer']['agents']
-    assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
-    
+    numOfAssignedAgents = assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
+
     client.start()
     agentLst = loadAllAgents(client.get_agents())
-    print(agentLst)
+    for i in range(numOfAssignedAgents):  # choosing the next destination for nodes with assigned pokemons, adding
+        # their destination to the agent's path
+        client.choose_next_edge(
+            '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].getNodeDest()) + '}')
+        agentLst[i].addToPath(pokLst[i].getNodeDest())
 
