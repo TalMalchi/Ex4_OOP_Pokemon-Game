@@ -18,25 +18,6 @@ class Pokemon:
         self.node_dest = None
         self.findSrcDest(graph)
 
-    def getValue(self):
-        return self.value
-
-    def setValue(self, value):
-        self.value = value
-
-    def getType(self):
-        """get the direction of the edge (-1 or1)"""
-        return self.type
-
-    def setType(self, type):
-        self.type = type
-
-    def getPos(self):
-        return self.pos
-
-    def setPos(self, pos):
-        self.pos = pos
-
     def parsePokemon(self, jsonObj):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
         self.value = float(jsonObj['Pokemon']['value'])
@@ -57,3 +38,26 @@ class Pokemon:
                     self.node_src = src
                     self.node_dest = dest
                     break
+
+    def __str__(self):
+        return "value: " + str(self.value) + ", type: " + str(self.type) + ", pos: " + str(self.pos) + "edge: (" + str(
+            self.node_src) + ", " + str(self.node_dest) + ")"
+
+    def getValue(self):
+        return self.value
+
+    def setValue(self, value):
+        self.value = value
+
+    def getType(self):
+        """get the direction of the edge (-1 or1)"""
+        return self.type
+
+    def setType(self, type):
+        self.type = type
+
+    def getPos(self):
+        return self.pos
+
+    def setPos(self, pos):
+        self.pos = pos

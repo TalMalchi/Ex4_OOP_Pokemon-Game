@@ -1,5 +1,3 @@
-import json
-
 from src.Point import Point
 
 
@@ -27,6 +25,10 @@ class Agent:
         self.dest = jsonStr['dest']
         self.speed = jsonStr['speed']
         self.pos = Point(jsonStr['speed'])
+
+    def __str__(self):
+        return "{id: " + str(self.id) + ", value: " + str(self.value) + ", src: " + str(self.src) + ", dest: " + str(
+            self.dest) + ", speed: " + str(self.speed) + ", pos: " + str(self.pos) + ", path: " + str(self.path)
 
     def getId(self):
         """get the id of the agent"""

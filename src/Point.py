@@ -13,6 +13,9 @@ class Point:
             self.y = y
             self.z = z
 
+    def __str__(self):
+        return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
+
     def getX(self):
         return self.x
 
