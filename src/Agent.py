@@ -18,6 +18,7 @@ class Agent:
             self.src = src
             self.speed = speed
             self.pos = pos
+            self.Pokemons_forAgent = []
         self.path = []
 
     def parseAgent(self, jsonStr):
@@ -82,6 +83,20 @@ class Agent:
     def getPath(self):
         """Get the path the agent need to moove on to get the pokemon as fast as he can"""
         return self.path
+
+    def getPokLst(self):
+        """get the list of pokemons for each agent"""
+        return self.Pokemons_forAgent
+
+    def getPokLstHead(self) -> Pokemon:
+        """get the list of pokemons for each agent"""
+        return self.Pokemons_forAgent[0]
+
+    def setPokemonsListPerAgent(self, PokemonsListPerAgent):
+        self.PokemonsListPerAgent = PokemonsListPerAgent
+
+    def addPokemonsListPerAgent(self, pok):
+        self.PokemonsListPerAgent.append(pok)
 
     # def GetAgentsList(self):
     #     """Get a list of all the Agents"""
