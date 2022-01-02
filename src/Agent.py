@@ -1,4 +1,7 @@
 from src.Point import Point
+from src.Pokemon import Pokemon
+import networkx as nx
+
 
 
 class Agent:
@@ -15,7 +18,7 @@ class Agent:
             self.speed = speed
             self.pos = pos
         self.path = []
-        self.all_agent = []
+        self.timeStamps = []
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
@@ -64,11 +67,25 @@ class Agent:
         self.dest = dest
 
     def addToPath(self, nodeId):
-        """Set the path the agent need to moove on to get the pokemon as fast as he can"""
+        """Set the path the agent need to move on to get the pokemon as fast as he can"""
         self.path.append(nodeId)
 
     def getPathHead(self):
         return self.path[0]
+
+    def getTimeStamps(self):
+        return self.timeStamps
+
+    def setTimeStamps(self, time):
+        self.timeStamps = time
+
+    def addTimeStamp(self, time):
+        self.timeStamps.append(time)
+
+    def removeHeadTimeStamp(self):
+        temp = self.timeStamps[0]
+        self.timeStamps.pop(0)
+        return temp
 
     def getPath(self):
         """Get the path the agent need to moove on to get the pokemon as fast as he can"""
@@ -82,3 +99,9 @@ class Agent:
 
     def get_current_edge(self):  # TODO
         """retur the edge that the agent is currently on"""
+
+
+    def calculateTime(self, pokemon: Pokemon, graph: nx.DiGraph): #total time to
+        total_time= self.speed/ graph.edges.get(pokemon.node_src)
+
+

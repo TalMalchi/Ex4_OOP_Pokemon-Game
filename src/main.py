@@ -15,10 +15,15 @@ if __name__ == '__main__':
     numOfAssignedAgents = assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
 
     client.start()
-    agentLst = loadAllAgents(client.get_agents())
-    for i in range(numOfAssignedAgents):  # choosing the next destination for nodes with assigned pokemons, adding
-        # their destination to the agent's path
-        client.choose_next_edge(
-            '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].getNodeDest()) + '}')
-        agentLst[i].addToPath(pokLst[i].getNodeDest())
+    while client.is_running() == 'true':
+        agentLst = loadAllAgents(client.get_agents())
+        for i in range(numOfAssignedAgents):  # choosing the next destination for nodes with assigned pokemons, adding
+            # their destination to the agent's path
+            client.choose_next_edge(
+                '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].getNodeDest()) + '}')
+            agentLst[i].addToPath(pokLst[i].getNodeDest())
 
+        client.move()
+        globalTimeStamps = []
+        for agent in agentLst:
+            globalTimeStamps.append(agent.timeStamps)
