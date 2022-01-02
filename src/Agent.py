@@ -92,8 +92,19 @@ class Agent:
     # def get_current_edge(self):  #
     #     """retur the edge that the agent is currently on"""
 
+    def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list):  # total time to path an edge
+        total_time = 0
+        for i in range(len(pathToAdd)):  # go all over the agent's path
+            for j in self.Pokemons_forAgent:
+                if i is j.node_src and i + 1 is j.node_dest:
+                    dist_src_dst = graph.nodes[j.node_src]['pos'].distance.graph.nodes[j.node_dest]['pos']
+                    dist_pokemon_src = graph.nodes[j.node_src]['pos'].distance.graph.nodes[j.pos]
+                    total_dist = dist_src_dst - dist_pokemon_src
+                    total_time = total_dist(graph.get_edge_data(j.node_src, j.node_dest)['weight'] / self.speed)
+                timeStamps.append(total_time)
+        timeStamps.sort()
 
-    def calculateTime(self, pokemon: Pokemon, graph: nx.DiGraph): #total time to
-        total_time= self.speed/ graph.edges.get(pokemon.node_src)
-
-
+    def findLocation(self,graph: nx.DiGraph):
+        for i in
+            m = (dest_node_y - src_node_y) / (dest_node_x - src_node_x)  # m in the linear function y = mx + b
+            b = dest_node_y - (m * dest_node_x)
