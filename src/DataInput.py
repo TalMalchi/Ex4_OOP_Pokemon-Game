@@ -28,6 +28,16 @@ def loadAllPokemons(pokemons, graph: nx.DiGraph):
     return pokLst
 
 
+def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
+    jsonTemp = json.loads(pokemons)
+    for i in range(len(jsonTemp['Pokemons'])):
+        if jsonTemp['Pokemons'][i]['pos'] != pokLst[i].getPosString():
+            pokAdded = Pokemon(graph, jsonStr=jsonTemp['Pokemons'][i])
+            pokLst.append(pokAdded)
+    pokLst.sort(key=lambda x: x.getValue(), reverse=True)
+    return pokLst
+
+
 def loadAllAgents(agents):
     agentLst = []
     jsonTemp = json.loads(agents)

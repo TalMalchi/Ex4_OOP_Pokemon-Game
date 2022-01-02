@@ -1,5 +1,9 @@
+import time
+
 from DataInput import *
 from src.Algorithms import *
+
+EPS = 0.000001
 
 if __name__ == '__main__':
     # default port
@@ -15,15 +19,28 @@ if __name__ == '__main__':
     numOfAssignedAgents = assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
 
     client.start()
-    while client.is_running() == 'true':
-        agentLst = loadAllAgents(client.get_agents())
-        for i in range(numOfAssignedAgents):  # choosing the next destination for nodes with assigned pokemons, adding
-            # their destination to the agent's path
-            client.choose_next_edge(
-                '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].getNodeDest()) + '}')
-            agentLst[i].addToPath(pokLst[i].getNodeDest())
+    startTime = time.time()
+    timeStamps = []
+    agentLst = loadAllAgents(client.get_agents())
+    for i in range(numOfAssignedAgents):  # choosing the next destination for nodes with assigned pokemons, adding
+        # their destination to the agent's path
+        client.choose_next_edge(
+            '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].getNodeDest()) + '}')
+        agentLst[i].addToPath(pokLst[i].getNodeDest(), timeStamps)
+        agentLst[i].addPokemonsListPerAgent(pokLst[i])
+    client.move()
 
-        client.move()
-        globalTimeStamps = []
+    while client.is_running() == 'true':
+        if time.time() - timeStamps[0] < EPS:
+            timeStamps.pop(0)
+            client.move()
+            agentLst = loadAllAgents(client.get_agents())
+
         for agent in agentLst:
-            globalTimeStamps.append(agent.timeStamps)
+            if agent.getDest() == -1:
+                poppedNode = agent.removePathHead()
+                client.choose_next_edge(
+                    '{"agent_id":' + str(agent.getId()) + ', "next_node_id":' + str(agent.getPathHead()) + '}')
+                if poppedNode == agent.getPokLstHead().get_node_src() and agent.getPathHead() == \
+                        agent.getPokLstHead().get_node_dest():  # A new pokemon exists
+                    pokLst =

@@ -1,13 +1,14 @@
-from src.Point import Point
-from src.Pokemon import Pokemon
 import networkx as nx
 
+from src.Point import Point
+from src.Pokemon import Pokemon
 
 
 class Agent:
 
     def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,
                  pos: Point = Point(), jsonStr=None):
+        self.PokemonsListPerAgent = None
         if jsonStr is not None:
             self.parseAgent(jsonStr)
         else:
@@ -18,7 +19,6 @@ class Agent:
             self.speed = speed
             self.pos = pos
         self.path = []
-        self.timeStamps = []
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
@@ -66,25 +66,17 @@ class Agent:
     def setDest(self, dest):
         self.dest = dest
 
-    def addToPath(self, nodeId):
-        """Set the path the agent need to move on to get the pokemon as fast as he can"""
-        self.path.append(nodeId)
+    def addToPath(self, lst: list, graph: nx.DiGraph, timeStamps: list):
+        """Set the path the agent needs to move on to get the pokemon as fast as he can"""
+        self.path.append(lst)
+        self.addTimeStamps(graph, timeStamps, lst)
 
     def getPathHead(self):
         return self.path[0]
 
-    def getTimeStamps(self):
-        return self.timeStamps
-
-    def setTimeStamps(self, time):
-        self.timeStamps = time
-
-    def addTimeStamp(self, time):
-        self.timeStamps.append(time)
-
-    def removeHeadTimeStamp(self):
-        temp = self.timeStamps[0]
-        self.timeStamps.pop(0)
+    def removePathHead(self):
+        temp = self.path[0]
+        self.path.pop(0)
         return temp
 
     def getPath(self):
@@ -93,12 +85,12 @@ class Agent:
 
     # def GetAgentsList(self):
     #     """Get a list of all the Agents"""
-
-    def is_moving(self):  # TODO
-        """If the agent is moving on edges"""
-
-    def get_current_edge(self):  # TODO
-        """retur the edge that the agent is currently on"""
+    #
+    # def is_moving(self):  #
+    #     """If the agent is moving on edges"""
+    #
+    # def get_current_edge(self):  #
+    #     """retur the edge that the agent is currently on"""
 
 
     def calculateTime(self, pokemon: Pokemon, graph: nx.DiGraph): #total time to

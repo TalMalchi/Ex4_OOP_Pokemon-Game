@@ -62,6 +62,9 @@ class Pokemon:
     def getPos(self):
         return self.pos
 
+    def getPosString(self):
+        return str(self.pos)
+
     def setPos(self, pos):
         self.pos = pos
 
