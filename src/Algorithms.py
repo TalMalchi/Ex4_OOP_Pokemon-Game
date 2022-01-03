@@ -1,7 +1,9 @@
 import random
+import sys
 
 import networkx as nx
 
+from src.Pokemon import Pokemon
 from src.client import Client
 
 
@@ -30,3 +32,35 @@ def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: n
         return len(pokLst)
 
 
+def tsp(graph: nx.DiGraph, nodesToVisit: list):
+    shortestPathDist = sys.maxsize
+    minj = 0
+    totalDist = 0
+    shortestPath = []
+    for i in range(len(nodesToVisit)):
+        for j in range(len(nodesToVisit)):
+            currShortestPathDist = nx.shortest_path_length(graph, source=i, target=j)
+            if shortestPathDist > currShortestPathDist:
+                minj = j
+                shortestPathDist = currShortestPathDist
+        totalDist += shortestPathDist
+        shortestPath.append(nx.shortest_path(graph, source=i, target=minj))
+        nodesToVisit.pop(i)
+    return totalDist, shortestPath
+
+
+def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon):
+    minDist = sys.maxsize
+    minPath = []
+    minLst = []
+    minAgentId = 0
+    for i in range(len(agentLst)):
+        tempLst = agentLst[i].getPokLst().append(pokemon)
+        tempShortDist, tempShortPath = tsp(graph, tempLst)
+        if minDist > tempShortDist:
+            minDist = tempShortDist
+            minPath = tempShortPath
+            minAgentId = i
+            minLst = tempLst
+    agentLst[minAgentId].setPokLst(minLst)
+    agentLst[minAgentId].setPath(minPath)

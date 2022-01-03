@@ -44,3 +44,11 @@ def loadAllAgents(agents):
     for i in range(len(jsonTemp['Agents'])):
         agentLst.append(Agent(jsonStr=jsonTemp['Agents'][i]['Agent']))
     return agentLst
+
+
+def addAllTimeStamps(agentLst: list, graph: nx.DiGraph, startTime):
+    timestamps = []
+    for agent in agentLst:
+        timestamps.append(agent.addTimeStamps(graph, timestamps, agent.getPath(), startTime))
+    return timestamps
+

@@ -1,4 +1,7 @@
+import math
+
 import networkx as nx
+from sympy import symbols, Eq, solve  # importing library sympy
 
 from src.Point import Point
 from src.Pokemon import Pokemon
@@ -70,7 +73,7 @@ class Agent:
     def addToPath(self, lst: list, graph: nx.DiGraph, timeStamps: list):
         """Set the path the agent needs to move on to get the pokemon as fast as he can"""
         self.path.append(lst)
-        self.addTimeStamps(graph, timeStamps, lst)
+        return self.addTimeStamps(graph, timeStamps, lst)
 
     def getPathHead(self):
         return self.path[0]
@@ -81,8 +84,11 @@ class Agent:
         return temp
 
     def getPath(self):
-        """Get the path the agent need to moove on to get the pokemon as fast as he can"""
+        """Get the path the agent need to move on to get the pokemon as fast as he can"""
         return self.path
+
+    def setPath(self, path: list, lstToAdd: list, graph: nx.DiGraph, timeStamps: list):
+        self.path = path
 
     def getPokLst(self):
         """get the list of pokemons for each agent"""
@@ -92,7 +98,7 @@ class Agent:
         """get the list of pokemons for each agent"""
         return self.Pokemons_forAgent[0]
 
-    def setPokemonsListPerAgent(self, PokemonsListPerAgent):
+    def setPokLst(self, PokemonsListPerAgent):
         self.PokemonsListPerAgent = PokemonsListPerAgent
 
     def addPokemonsListPerAgent(self, pok):
@@ -105,19 +111,20 @@ class Agent:
     #     """If the agent is moving on edges"""
     #
     # def get_current_edge(self):  #
-    #     """retur the edge that the agent is currently on"""
+    #     """return the edge that the agent is currently on"""
 
-    def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list):  # total time to path an edge
+    def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list, startTime):
         total_time = 0
-        for i in range(len(pathToAdd)):  # go all over the agent's path
+        for i in range(len(pathToAdd) - 1):  # go all over the agent's path
             for j in self.Pokemons_forAgent:
-                if i is j.node_src and i + 1 is j.node_dest:
+                if i == j.node_src and (i + 1) == j.node_dest:
                     dist_src_dst = graph.nodes[j.node_src]['pos'].distance.graph.nodes[j.node_dest]['pos']
-                    dist_pokemon_src = graph.nodes[j.node_src]['pos'].distance.graph.nodes[j.pos]
+                    dist_pokemon_src = graph.nodes[j.node_src]['pos'].distance(graph.nodes[j.pos])
                     total_dist = dist_src_dst - dist_pokemon_src
                     total_time = total_dist(graph.get_edge_data(j.node_src, j.node_dest)['weight'] / self.speed)
-                timeStamps.append(total_time)
+                timeStamps.append(startTime + total_time)
         timeStamps.sort()
+        return timeStamps
 
     def findLocation(self,graph: nx.DiGraph):
         for i in
