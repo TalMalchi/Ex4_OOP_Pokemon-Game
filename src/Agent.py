@@ -31,7 +31,7 @@ class Agent:
         self.src = jsonStr['src']
         self.dest = jsonStr['dest']
         self.speed = jsonStr['speed']
-        self.pos = Point(jsonStr['speed'])
+        self.pos = Point(string=jsonStr['pos'])
 
     def __str__(self):
         return "{id: " + str(self.id) + ", value: " + str(self.value) + ", src: " + str(self.src) + ", dest: " + str(
