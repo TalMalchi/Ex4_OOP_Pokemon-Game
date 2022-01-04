@@ -18,13 +18,13 @@ class Pokemon:
         self.node_dest = None  # ID of node
         self.findSrcDest(graph)
 
-    def parsePokemon(self, jsonObj):
+    def parsePokemon(self, jsonObj):  # parse string pokemon to pokemon object
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
         self.value = float(jsonObj['Pokemon']['value'])
         self.type = int(jsonObj['Pokemon']['type'])
         self.pos = Point(string=jsonObj['Pokemon']['pos'])
 
-    def findSrcDest(self, graph: nx.DiGraph):
+    def findSrcDest(self, graph: nx.DiGraph):  # check the location of the pokemon
         for src, dest, weight in graph.edges(data="weight"):
             distSrcSelf = graph.nodes[src]['pos'].distance(self.pos)
             distSelfDest = graph.nodes[dest]['pos'].distance(self.pos)
@@ -62,6 +62,9 @@ class Pokemon:
     def getPos(self):
         return self.pos
 
+    def getPosString(self):
+        return str(self.pos)
+
     def setPos(self, pos):
         self.pos = pos
 
@@ -70,3 +73,11 @@ class Pokemon:
 
     def getNodeSrc(self):
         return self.node_src
+
+    def get_node_src(self) -> int:
+        """get id of node"""
+        return self.node_src
+
+    def get_node_dest(self) -> int:
+        """get id of node"""
+        return self.node_dest
