@@ -12,8 +12,7 @@ class test_Pokemon(TestCase):
         pok_tocheck=Pokemon(graph, 5.0, -1, Point(35.197656770719604,32.10191878639921,0.0))
         self.assertEqual(pok, pok_tocheck)
 
-def test_find_src_dest(self):
-
+    def test_find_src_dest(self):
         graph = nx.DiGraph()
         graph.add_node(1, pos=Point(0, 0, 0))
         graph.add_node(2, pos=Point(1, 0, 0))
