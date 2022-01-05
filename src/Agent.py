@@ -2,7 +2,6 @@ import math
 import time
 
 import networkx as nx
-from sympy import Eq  # importing library sympy
 
 from src.Point import Point
 from src.Pokemon import Pokemon
@@ -12,7 +11,7 @@ class Agent:
 
     def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,
                  pos: Point = Point(), jsonStr=None):
-        self.PokemonsListPerAgent = None
+        self.pokList = None
         if jsonStr is not None:
             self.parseAgent(jsonStr)
         else:
@@ -27,6 +26,9 @@ class Agent:
         self.Previous_node_time = 0  # this is the time that passed from the start of travel from previous node
         self.pos_Vchange = Point  # this is the position that the agent changed his speed
         self.path = []
+        self.timePrevNode = 0
+        self.speedPrevNode = 0
+        self.passedPokPos = Point()
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
@@ -120,30 +122,39 @@ class Agent:
 
     def getPokLst(self):
         """get the list of pokemons for each agent"""
-        return self.Pokemons_forAgent
+        return self.pokList
 
     def getPokLstHead(self) -> Pokemon:
         """get the list of pokemons for each agent"""
-        return self.Pokemons_forAgent[0]
+        return self.pokList[0]
 
     def setPokLst(self, PokemonsListPerAgent):
-        self.PokemonsListPerAgent = PokemonsListPerAgent
+        self.pokList = PokemonsListPerAgent
 
     def addPokemonsListPerAgent(self, pok):
-        self.PokemonsListPerAgent.append(pok)
+        self.pokList.append(pok)
 
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list, startTime):
         """timestamps := list of the timestamps when the 'move' method from client should be called"""
         total_time = 0
         for i in range(len(pathToAdd) - 1):  # go all over the agent's path
-            for j in self.Pokemons_forAgent:
-                if i == j.node_src and (i + 1) == j.node_dest:
-                    dist_src_dst = graph.nodes[j.node_src]['pos'].distance.graph.nodes[j.node_dest]['pos']
-                    dist_pokemon_src = graph.nodes[j.node_src]['pos'].distance(graph.nodes[j.pos])
-                    total_dist = dist_src_dst - dist_pokemon_src
-                    total_time = total_dist(graph.get_edge_data(j.node_src, j.node_dest)['weight'] / self.speed)
-                timeStamps.append(startTime + total_time)
-        timeStamps.sort()
+            for pok in self.pokList:
+                if i == pok.node_src and (i + 1) == pok.node_dest:  # if the next edge has a pokemmon
+                    dist_src_dst = graph.nodes[pok.node_src]['pos'].distance.graph.nodes[pok.node_dest][
+                        'pos']  # total distance of the edge
+                    dist_pokemon_src = graph.nodes[pok.node_src]['pos'].distance(
+                        pok.pos)  # distance between src node to pokemon
+                    percentOfEdgePassedTillPokemon = dist_pokemon_src / dist_src_dst
+                    time_to_pokemon = percentOfEdgePassedTillPokemon * (
+                            graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
+                    percentOfEdgePassedFromPokemon = 1 - percentOfEdgePassedTillPokemon
+                    total_dist = dist_src_dst - dist_pokemon_src  # total distance
+                    time_from_pokemon = percentOfEdgePassedFromPokemon * (
+                            graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
+                    # timeStamps[time_to_pokemon].append(self.id)
+                    timeStamps.append((time_to_pokemon, self.id))
+                    timeStamps.append((time_from_pokemon, self.id))
+        sorted(timeStamps, key=lambda x: x[0])
         return timeStamps
 
     def quadratic(self, a, b, c):
@@ -151,6 +162,22 @@ class Agent:
         x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
         x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
         return x1, x2
+
+    def distanceFromSrcNode(self, graph: nx.DiGraph):
+        timeFromStart = time.time() - self.timePrevNode
+        lengthOfEdge = graph.nodes[self.path[0]]['pos'].distance(graph.nodes[self.path[1]]['pos'])
+        if (not (self.getPokLstHead().node_src == self.path[0] and self.getPokLstHead().node_dest == self.path[1])) or \
+                (self.pokList[0].get_node_src() == self.path[0] and self.pokList[0].get_node_dest() == self.path[1]):
+            # No pokemon on current edge or agent before pokemon on current edge
+            percentOfEdge = timeFromStart / (graph.get_edge_data(self.path[0], self.path[1])['weight'] / self.speed)
+            return lengthOfEdge * percentOfEdge
+        else:
+            # Pokemon passed on current edge
+            srcPokDist = self.passedPokPos.distance(graph.nodes[self.path[0]]['pos'])
+            newEdgeLength = lengthOfEdge - srcPokDist
+            newWeight = graph.get_edge_data(self.path[0], self.path[1])['weight'] * (newEdgeLength / lengthOfEdge)
+            percentOfEdge = timeFromStart / (newWeight / self.speed)
+            return newEdgeLength * percentOfEdge
 
     def find_curr_pos_of_agent(self, graph: nx.DiGraph) -> Point:
         """function get agent and return his current position (Point)"""
@@ -160,9 +187,7 @@ class Agent:
         xEnd = graph.nodes[self.getPath()[1]]['pos'].getX()
         yEnd = graph.nodes[self.getPath()[1]]['pos'].getY()
 
-        weight = graph.get_edge_data(self.path[0], self.path[1])['weight']
-        currTime = time.time() - self.Previous_node_time
-        dist = self.speed * currTime  # S=VT
+        dist = self.distanceFromSrcNode(graph)
 
         m = (yStart - yEnd) / (xStart - xEnd)
         b = yStart - (m * xStart)  # y=Mx+b -> b=y-Mx
@@ -172,8 +197,8 @@ class Agent:
         qc = (b ** 2) - (2 * yStart * b) + (xStart ** 2) - (dist ** 2)
 
         x1, x2 = self.quadratic(qa, qb, qc)
-        y1 = m*x1 + b
-        y2 = m*x2 + b
+        y1 = m * x1 + b
+        y2 = m * x2 + b
         p1 = Point(x1, y1)
         p2 = Point(x2, y2)
         destP = graph.nodes[self.getPath()[1]]['pos']

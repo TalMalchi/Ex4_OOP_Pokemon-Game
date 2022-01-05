@@ -36,9 +36,9 @@ if __name__ == '__main__':
             client.move()
 
         for i in range(len(agentLst)):
-            if agentLst[i].getDest() == -1:  # agent arrived at intersection
+            if agentLst[i].getDest() == -1:  # agent arrived at intersection of nodes
                 poppedNode = agentLst[i].removePathHead()  # node which was the src node of the agent's previous edge
-                client.choose_next_edge(  # sending the agent towards the next node in its path list
+                client.choose_next_edge(  # sending the agent towards the next node in its path
                     '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(
                         agentLst[i].getPathHead()) + '}')
                 agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
