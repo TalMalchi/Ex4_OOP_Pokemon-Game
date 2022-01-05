@@ -22,7 +22,6 @@ class Agent:
             self.speed = speed
             self.pos = pos
             # Do Not add anything else to "else"
-        self.Pokemons_forAgent = []
         self.Previous_node_time = 0  # this is the time that passed from the start of travel from previous node
         self.pos_Vchange = Point  # this is the position that the agent changed his speed
         self.path = []
