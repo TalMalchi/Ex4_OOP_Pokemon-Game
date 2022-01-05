@@ -205,3 +205,7 @@ class Agent:
             return p1
         else:
             return p2
+
+    def __eq__(self, other):
+        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src\
+               and self.speed == other.speed and self.pos == other.pos

@@ -25,7 +25,7 @@ class test_Agent(TestCase):
         self.assertEqual(ans, 5.0)
 
     def test_set_pos_vchange(self):
-       ( a = Agent)(0, 1, 1, 2, 1, Point(0, 0, 0))
+        a = Agent(0, 1, 1, 2, 1, Point(0, 0, 0))
         a.set_pos_Vchange(Point(1, 2, 0))
         ans = a.get_pos_Vchange()
         self.assertEqual(ans, Point(1, 2, 0))

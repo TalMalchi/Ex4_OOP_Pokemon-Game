@@ -6,8 +6,13 @@ from src.Point import Point
 
 class test_Pokemon(TestCase):
     def test_parse_pok(self):                         # TODO
-  #  string_check=
-    def test_find_src_dest(self):
+        pok=Pokemon()
+        s = '{"Pokemons":[{"Pokemon":{"value":5.0,"type":-1,"pos":"35.197656770719604,32.10191878639921,0.0"}}]}'
+        pok.parsePokemon(s)
+        pok_tocheck=Pokemon(graph, 5.0, -1, Point(35.197656770719604,32.10191878639921,0.0))
+        self.assertEqual(pok, pok_tocheck)
+
+def test_find_src_dest(self):
 
         graph = nx.DiGraph()
         graph.add_node(1, pos=Point(0, 0, 0))
