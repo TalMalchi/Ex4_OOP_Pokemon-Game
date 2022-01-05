@@ -54,6 +54,7 @@ if __name__ == '__main__':
                 agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
                 agentLst[i].set_pos_Vchange(agentLst[i].getPos())
                 # TODO assign new pokemon
+                # TODO fix timestamps. return from all functions or make dictionary and return from functions
 
 
 

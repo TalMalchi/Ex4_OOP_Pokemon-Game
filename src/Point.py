@@ -38,4 +38,5 @@ class Point:
         self.z = z
 
     def distance(self, p1) -> float:
+        """Calculates distance between 2 points. Returns it."""
         return math.sqrt((self.x - p1.x) ** 2 + (self.y - p1.y) ** 2)

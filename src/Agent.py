@@ -1,7 +1,8 @@
 import math
+import time
 
 import networkx as nx
-from sympy import symbols, Eq, solve  # importing library sympy
+from sympy import Eq  # importing library sympy
 
 from src.Point import Point
 from src.Pokemon import Pokemon
@@ -21,10 +22,11 @@ class Agent:
             self.src = src
             self.speed = speed
             self.pos = pos
-            self.Pokemons_forAgent = []
-            self.Previous_node_time = 0  # this is the time that passed from the start of tavel from previous node
-            self.pos_Vchange = (int, int)  # this is the position that the agent changed his speed
-            self.path = []
+            # Do Not add anything else to "else"
+        self.Pokemons_forAgent = []
+        self.Previous_node_time = 0  # this is the time that passed from the start of travel from previous node
+        self.pos_Vchange = Point  # this is the position that the agent changed his speed
+        self.path = []
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
@@ -50,11 +52,11 @@ class Agent:
         """set the time that passed from the start of travel from previous node"""
         self.Previous_node_time = Previous_node_time
 
-    def set_pos_Vchange(self, pos_Vchange):
+    def set_pos_Vchange(self, pos_Vchange: Point):
         """set the position that the agent changed his speed"""
         self.pos_Vchange = pos_Vchange
 
-    def get_pos_Vchange(self):
+    def get_pos_Vchange(self) -> Point:
         """get the position that the agent changed his speed"""
         return self.pos_Vchange
 
@@ -66,9 +68,17 @@ class Agent:
         """get the value of the agent"""
         return self.value
 
+    def setValue(self, val):
+        """set the value of the agent"""
+        self.value = val
+
     def get_speed(self):
         """get the speed of the agent"""
         return self.speed
+
+    def set_speed(self, sp):
+        """set the speed of the agent"""
+        self.speed = sp
 
     def getPos(self):
         return self.pos
@@ -91,7 +101,7 @@ class Agent:
     def addToPath(self, lst: list, graph: nx.DiGraph, timeStamps: list):
         """Set the path the agent needs to move on to get the pokemon as fast as he can"""
         self.path.append(lst)
-        return self.addTimeStamps(graph, timeStamps, lst)
+        return self.addTimeStamps(graph, timeStamps, lst)  # TODO edit
 
     def getPathHead(self):
         return self.path[0]
@@ -122,16 +132,8 @@ class Agent:
     def addPokemonsListPerAgent(self, pok):
         self.PokemonsListPerAgent.append(pok)
 
-    # def GetAgentsList(self):
-    #     """Get a list of all the Agents"""
-    #
-    # def is_moving(self):  #
-    #     """If the agent is moving on edges"""
-    #
-    # def get_current_edge(self):  #
-    #     """return the edge that the agent is currently on"""
-
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list, startTime):
+        """timestamps := list of the timestamps when the 'move' method from client should be called"""
         total_time = 0
         for i in range(len(pathToAdd) - 1):  # go all over the agent's path
             for j in self.Pokemons_forAgent:
@@ -144,63 +146,38 @@ class Agent:
         timeStamps.sort()
         return timeStamps
 
-    def distance(point1, point2) -> float:
-        """Calculate distance between the two points"""
-        return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+    def quadratic(self, a, b, c):
+        """Method to calculate the results of a quadratic equation (2 values)"""
+        x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+        x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+        return x1, x2
 
-    #    def find_curr_pos_of_agent(self, graph: nx.DiGraph) -> (int, int):
-    #         """function get agent and return his current position (X,Y)"""
-    #         # defining symbols used in equations
-    #         # or unknown variables
-    #         X_Agent, Y_Agent = symbols('X_Agent,Y_Agent')
-    #         Xstart = graph.getnode(self.getPath[0]).getX()
-    #         Ystart = graph.getnode(self.getpath[0]).getY()
-    #
-    #         Xend = graph.getnode(self.getPath[1]).getX()
-    #         Yend = graph.getnode(self.getPath[1]).getY()
-    #         # copmute M by: y=MX+B with those 2 points
-    #         M = (Ystart - Yend) / (Xstart - Xend)
-    #         # than compute below 2 different equation (with:https://www.geeksforgeeks.org/python-solve-the-linear-equation-of-multiple-variable/)  to find X_Agent,Y_Agent (we already know M)
-    #         # defining equations
-    #
-    #         eq1 = Eq(((Ystart - Y_Agent) / (Xstart - X_Agent)), M)  # first equation
-    #         eq2 = Eq(((Yend - Y_Agent) / (Xend - X_Agent)), M)  # sec equ
-    #         # Creating an empty Dictionary
-    #         AnsDict = {}
-    #
-    #         AnsDict = solve((eq1, eq2), (X_Agent, Y_Agent))
-    #         return (AnsDict[X_Agent], AnsDict[Y_Agent])
-    # # for i in
-    # # m = (dest_node_y - src_node_y) / (dest_node_x - src_node_x)  # m in the linear function y = mx + b
-    # # b = dest_node_y - (m * dest_node_x)
+    def find_curr_pos_of_agent(self, graph: nx.DiGraph) -> Point:
+        """function get agent and return his current position (Point)"""
+        xStart = self.get_pos_Vchange().getX()
+        yStart = self.get_pos_Vchange().getY()
+        # TODO add if to handle y=c function
+        xEnd = graph.nodes[self.getPath()[1]]['pos'].getX()
+        yEnd = graph.nodes[self.getPath()[1]]['pos'].getY()
 
-    def find_curr_pos_of_agent(self, graph: nx.DiGraph) -> (int, int):
-        """function get agent and return his current position (X,Y)"""
-        Pos_speed_change = self.get_pos_Vchange()
-        Xstart = graph.nodes[self.getPath()[0]].getX()
-        Ystart = graph.nodes[self.getPath()[0]].getY()
+        weight = graph.get_edge_data(self.path[0], self.path[1])['weight']
+        currTime = time.time() - self.Previous_node_time
+        dist = self.speed * currTime  # S=VT
 
-        Xend = graph.nodes[self.getPath()[1]].getX()
-        Yend = graph.nodes[self.getPath()[1]].getY()
-        # copmute M by: y=MX+B with those 2 points
-        M = (Ystart - Yend) / (Xstart - Xend)
-        # y=Mx+b -> b=y-Mx
-        b = Ystart - (M * Xstart)
+        m = (yStart - yEnd) / (xStart - xEnd)
+        b = yStart - (m * xStart)  # y=Mx+b -> b=y-Mx
 
-        # distanceTwoPoints=Pos_speed_change.distance(Xstart,Ystart)
-        # X=VT->
-        speedOfAgent = self.speed
-        time = self.Previous_node_time
-        dist = speedOfAgent * time
-        # defining symbols used in equations
-        # or unknown variables
-        X_Agent, Y_Agent = symbols('X_Agent,Y_Agent')
-        # defining equations
-        eq1 = Eq(math.sqrt(((Xstart - X_Agent) ** 2) + (Ystart - Y_Agent) ** 2), M)  # first equation
-        # y=Mx+b -> b=y-Mx
-        eq2 = Eq((Y_Agent - M * X_Agent), b)  # sec
-        # then computing below 2 different equations to find X_Agent,Y_Agent (we already know M)
-        # adapted from: with:https://www.geeksforgeeks.org/python-solve-the-linear-equation-of-multiple-variable/
+        qa = (m ** 2) + 1
+        qb = (2 * b * m) - (2 * m * yStart) - (2 * xStart)
+        qc = (b ** 2) - (2 * yStart * b) + (xStart ** 2) - (dist ** 2)
 
-        AnsDict = solve((eq1, eq2), X_Agent, Y_Agent)
-        return AnsDict[X_Agent], AnsDict[Y_Agent]
+        x1, x2 = self.quadratic(qa, qb, qc)
+        y1 = m*x1 + b
+        y2 = m*x2 + b
+        p1 = Point(x1, y1)
+        p2 = Point(x2, y2)
+        destP = graph.nodes[self.getPath()[1]]['pos']
+        if self.get_pos_Vchange().distance(p1) + p1.distance(destP) == self.get_pos_Vchange().distance(destP):
+            return p1
+        else:
+            return p2

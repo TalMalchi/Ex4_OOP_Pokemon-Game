@@ -33,6 +33,8 @@ def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: n
 
 
 def tsp(graph: nx.DiGraph, nodesToVisit: list):
+    """Calculates the shortest path between a list of nodes, given the graph. Does not calculate the time needed to
+    traverse (it is also dependent on speed of agent."""
     shortestPathDist = sys.maxsize
     minj = 0
     totalDist = 0
@@ -50,6 +52,8 @@ def tsp(graph: nx.DiGraph, nodesToVisit: list):
 
 
 def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon):
+    """Chooses the best agent to allocate the new pokemon to, using TSP. Returns the ID of the agent which was chosen
+    for the new pokemon"""
     minDist = sys.maxsize
     minPath = []
     minLst = []
@@ -64,3 +68,4 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon)
             minLst = tempLst
     agentLst[minAgentId].setPokLst(minLst)
     agentLst[minAgentId].setPath(minPath)
+    return minAgentId

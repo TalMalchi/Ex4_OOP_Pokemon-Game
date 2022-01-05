@@ -29,6 +29,8 @@ def loadAllPokemons(pokemons, graph: nx.DiGraph):
 
 
 def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
+    """Check if pokemon exists in the list of pokemons. Add it if it does not. As the position of the pokemon is
+    immutable, the comparison is performed on it"""
     jsonTemp = json.loads(pokemons)
     for i in range(len(jsonTemp['Pokemons'])):
         if jsonTemp['Pokemons'][i]['pos'] != pokLst[i].getPosString():

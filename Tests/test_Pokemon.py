@@ -51,11 +51,6 @@ class test_Pokemon(TestCase):
     def test_get_pos_string():
         assert False
 
-    def test_get_node_dest():
-        assert False
-
-    def test_get_node_src():
-        assert False
 
     def test_get_node_src():
         assert False
