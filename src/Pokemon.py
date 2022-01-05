@@ -60,12 +60,15 @@ class Pokemon:
         return self.type
 
     def setType(self, type):
+        """get the direction of the edge (-1 or 1)"""
         self.type = type
 
     def getPos(self):
+        """get the position of pokemon"""
         return self.pos
 
     def getPosString(self):
+        """get the position of pokemon as string"""
         return str(self.pos)
 
     def setPos(self, pos):

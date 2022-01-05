@@ -133,6 +133,7 @@ class Agent:
         self.PokemonsListPerAgent.append(pok)
 
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list, startTime):
+        """timestamps := list of the timestamps when the 'move' method from client should be called"""
         total_time = 0
         for i in range(len(pathToAdd) - 1):  # go all over the agent's path
             for j in self.Pokemons_forAgent:
