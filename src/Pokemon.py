@@ -8,6 +8,8 @@ EPS = 0.000001
 class Pokemon:
 
     def __init__(self, graph: nx.DiGraph, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
+        """Creates a new Pokemon (usually from string), calculates the src and dest nodes of the edge on which the
+        pokemon is located (the 'findSrcDest' fucntion)."""
         if jsonStr is not None:
             self.parsePokemon(jsonStr)
         else:
@@ -24,7 +26,8 @@ class Pokemon:
         self.type = int(jsonObj['Pokemon']['type'])
         self.pos = Point(string=jsonObj['Pokemon']['pos'])
 
-    def findSrcDest(self, graph: nx.DiGraph):  # check the location of the pokemon
+    def findSrcDest(self, graph: nx.DiGraph):
+        """check the edge of the pokemon. Assigns it to the pokemon attributes"""
         for src, dest, weight in graph.edges(data="weight"):
             distSrcSelf = graph.nodes[src]['pos'].distance(self.pos)
             distSelfDest = graph.nodes[dest]['pos'].distance(self.pos)
@@ -53,7 +56,7 @@ class Pokemon:
         self.value = value
 
     def getType(self):
-        """get the direction of the edge (-1 or1)"""
+        """get the direction of the edge (-1 or 1)"""
         return self.type
 
     def setType(self, type):
@@ -67,12 +70,6 @@ class Pokemon:
 
     def setPos(self, pos):
         self.pos = pos
-
-    def getNodeDest(self):
-        return self.node_dest
-
-    def getNodeSrc(self):
-        return self.node_src
 
     def get_node_src(self) -> int:
         """get id of node"""
