@@ -180,13 +180,15 @@ class Agent:
 
     def find_curr_pos_of_agent(self, graph: nx.DiGraph) -> Point:
         """function get agent and return his current position (Point)"""
-        xStart = self.get_pos_Vchange().getX()
-        yStart = self.get_pos_Vchange().getY()
-        # TODO add if to handle y=c function
+        xStart = graph.nodes[self.getPath()[0]]['pos'].getX()
+        yStart = graph.nodes[self.getPath()[0]]['pos'].getY()
         xEnd = graph.nodes[self.getPath()[1]]['pos'].getX()
         yEnd = graph.nodes[self.getPath()[1]]['pos'].getY()
 
         dist = self.distanceFromSrcNode(graph)
+
+        if xStart == xEnd:  # if x=constant
+            return Point(xStart, yStart + dist, 0)
 
         m = (yStart - yEnd) / (xStart - xEnd)
         b = yStart - (m * xStart)  # y=Mx+b -> b=y-Mx

@@ -1,3 +1,4 @@
+import json
 import time
 from unittest import TestCase
 
@@ -10,13 +11,14 @@ from src.Pokemon import Pokemon
 
 class test_Agent(TestCase):
 
-    def test_parse_agent(self):                         # TODO
-        s1 = '{"Agents":[{"Agent":{"id":0,"value":0.0,"src":0,"dest":1,"speed":1.0,"pos":"35.18753053591606,32.10378225882353,0.0"}}]}'
-
-    # def test_get_previous_node_time(self):
-    #     assert False)atocheckgeent_=
-    a=parseAgent(s1)
-
+    def test_parse_agent(self):  # TODO
+        ag = Agent()
+        s1 = json.loads(
+            '{"Agents":[{"Agent":{"id":0,"value":0.0,"src":0,"dest":1,"speed":1.0,"pos":"35.18753053591606,32.10378225882353,0.0"}}]}')[
+            'Agents'][0]['Agent']
+        ag.parseAgent(s1)
+        agent_toCheck = Agent(0, 0.0, 0, 1, 1.0, Point(35.18753053591606, 32.10378225882353, 0.0))
+        self.assertEqual(ag, agent_toCheck)
 
     def test_set_previous_node_time(self):
         a = Agent(0, 1, 1, 2, 1, Point(0, 0, 0))
@@ -97,7 +99,7 @@ class test_Agent(TestCase):
         ans = a.getDest()
         self.assertEqual(ans, 7)
 
-    def test_add_to_path(self):                     # TODO
+    def test_add_to_path(self):  # TODO
         graph = nx.DiGraph()
         graph.add_node(1, pos=Point(0, 0, 0))
         graph.add_node(2, pos=Point(1, 0, 0))
@@ -107,10 +109,10 @@ class test_Agent(TestCase):
         graph.add_edge(1, 3, weight=1)
         a = Agent(0, 1, 1, 2, 1, Point(0, 0, 0))
         a.path = []
-        current= time.time()
-        current1=time.time()
-        a.addToPath([5],graph,[current,current1])
-        ans=a.getPathHead()
+        current = time.time()
+        current1 = time.time()
+        a.addToPath([5], graph, [current, current1])
+        ans = a.getPathHead()
         self.assertEqual(ans, 5)
 
     def test_get_path_head(self):
@@ -161,8 +163,8 @@ class test_Agent(TestCase):
         p3 = Pokemon(graph, 2, 1, Point(1, 2, 3))
         print(p1)
 
-        #poke_list = [p1, p2, p3]
-        poke_list1=[]
+        # poke_list = [p1, p2, p3]
+        poke_list1 = []
         poke_list1.append(Pokemon(graph, 0, 1, Point(1, 2, 1)))
         poke_list1.append(Pokemon(graph, 1, 1, Point(1, 2, 2)))
         poke_list1.append(Pokemon(graph, 2, 1, Point(1, 2, 3)))
@@ -187,19 +189,20 @@ class test_Agent(TestCase):
         poke_list1.append(Pokemon(graph, 1, 1, Point(1, 2, 2)))
         poke_list1.append(Pokemon(graph, 2, 1, Point(1, 2, 3)))
         a.setPokLst(poke_list1)
-        ans=a.getPokLstHead()
+        ans = a.getPokLstHead()
 
         self.assertEqual(ans, Pokemon(graph, 0, 1, Point(1, 2, 1)))
+
     # def test_set_pok_lst(self):
     #     assert False
 
-    #def test_add_pokemons_list_per_agent(self):
-     #   assert False
+    # def test_add_pokemons_list_per_agent(self):
+    #   assert False
 
-    def test_add_time_stamps(self):                         # TODO
+    def test_add_time_stamps(self):  # TODO
         assert False
 
-    def test_find_curr_pos_of_agent(self):                      # TODO
+    def test_find_curr_pos_of_agent(self):  # TODO
         # (self, graph: nx.DiGraph)
         # test without changing speed
         graph = nx.DiGraph()
