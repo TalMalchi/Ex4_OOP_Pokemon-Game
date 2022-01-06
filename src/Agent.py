@@ -11,7 +11,7 @@ class Agent:
 
     def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,
                  pos: Point = Point(), jsonStr=None):
-        self.pokList = None
+        self.pokList = []
         if jsonStr is not None:
             self.parseAgent(jsonStr)
         else:
@@ -22,12 +22,9 @@ class Agent:
             self.speed = speed
             self.pos = pos
             # Do Not add anything else to "else"
-        self.Previous_node_time = 0  # this is the time that passed from the start of travel from previous node
-        self.pos_Vchange = Point  # this is the position that the agent changed his speed
+        self.prevNodeTime = 0  # this is the time that passed from the start of travel from previous node
         self.path = []
-        self.timePrevNode = 0
-        self.speedPrevNode = 0
-        self.passedPokPos = Point()
+        self.passedPokPos = Point()  # this is the position that the agent changed his speed or its prev node (whichever was last)
 
     def parseAgent(self, jsonStr):
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
@@ -47,19 +44,19 @@ class Agent:
 
     def get_previous_node_time(self):
         """the time that passed from the start of travel from previous node"""
-        return self.Previous_node_time
+        return self.prevNodeTime
 
-    def set_previous_node_time(self, Previous_node_time):
+    def set_previous_node_time(self, previous_node_time):
         """set the time that passed from the start of travel from previous node"""
-        self.Previous_node_time = Previous_node_time
+        self.prevNodeTime = previous_node_time
 
-    def set_pos_Vchange(self, pos_Vchange: Point):
+    def setPassedPokPos(self, passedPokPos: Point):
         """set the position that the agent changed his speed"""
-        self.pos_Vchange = pos_Vchange
+        self.passedPokPos = passedPokPos
 
-    def get_pos_Vchange(self) -> Point:
+    def getPassedPokPos(self) -> Point:
         """get the position that the agent changed his speed"""
-        return self.pos_Vchange
+        return self.passedPokPos
 
     def getId(self):
         """get the id of the agent"""
@@ -101,8 +98,9 @@ class Agent:
 
     def addToPath(self, lst: list, graph: nx.DiGraph, timeStamps: list):
         """Set the path the agent needs to move on to get the pokemon as fast as he can"""
-        self.path.append(lst)
-        return self.addTimeStamps(graph, timeStamps, lst)  # TODO edit
+        for i in lst:
+            self.path.append(i)
+        return self.addTimeStamps(graph, timeStamps)
 
     def getPathHead(self):
         return self.path[0]
@@ -116,8 +114,9 @@ class Agent:
         """Get the path the agent need to move on to get the pokemon as fast as he can"""
         return self.path
 
-    def setPath(self, path: list, lstToAdd: list, graph: nx.DiGraph, timeStamps: list):
+    def setPath(self, path: list, graph: nx.DiGraph, timeStamps: list):
         self.path = path
+        return self.addTimeStamps(graph, timeStamps)
 
     def getPokLst(self):
         """get the list of pokemons for each agent"""
@@ -133,12 +132,18 @@ class Agent:
     def addPokemonsListPerAgent(self, pok):
         self.pokList.append(pok)
 
-    def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list, pathToAdd: list, startTime):
+    def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list):
         """timestamps := list of the timestamps when the 'move' method from client should be called"""
-        total_time = 0
-        for i in range(len(pathToAdd) - 1):  # go all over the agent's path
+        for timeId in range(len(timeStamps)):
+            if timeStamps[timeId][1] == self.id:
+                timeStamps.pop(timeId)
+                timeId -= 1
+        for i in range(len(self.path) - 1):  # go all over the agent's path
+            pokFound = False
             for pok in self.pokList:
                 if i == pok.node_src and (i + 1) == pok.node_dest:  # if the next edge has a pokemmon
+                    # TODO currently the assumption is that there are no 2 pokemons on 1 edge
+                    pokFound = True
                     dist_src_dst = graph.nodes[pok.node_src]['pos'].distance.graph.nodes[pok.node_dest][
                         'pos']  # total distance of the edge
                     dist_pokemon_src = graph.nodes[pok.node_src]['pos'].distance(
@@ -150,9 +155,15 @@ class Agent:
                     total_dist = dist_src_dst - dist_pokemon_src  # total distance
                     time_from_pokemon = percentOfEdgePassedFromPokemon * (
                             graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
-                    # timeStamps[time_to_pokemon].append(self.id)
-                    timeStamps.append((time_to_pokemon, self.id))
-                    timeStamps.append((time_from_pokemon, self.id))
+                    timeStamps.append((timeStamps[-1][0] + time_to_pokemon, self.id))
+                    timeStamps.append((timeStamps[-1][0] + time_from_pokemon, self.id))
+                    break
+            if pokFound is False:
+                timeToNextNode = graph.get_edge_data(self.path[i], self.path[i + 1])['weight'] / self.speed
+                if len(timeStamps) >= 1:
+                    timeStamps.append((timeStamps[-1] + timeToNextNode, self.id))
+                else:
+                    timeStamps.append((timeToNextNode, self.id))
         sorted(timeStamps, key=lambda x: x[0])
         return timeStamps
 
@@ -163,7 +174,7 @@ class Agent:
         return x1, x2
 
     def distanceFromSrcNode(self, graph: nx.DiGraph):
-        timeFromStart = time.time() - self.timePrevNode
+        timeFromStart = time.time() - self.prevNodeTime
         lengthOfEdge = graph.nodes[self.path[0]]['pos'].distance(graph.nodes[self.path[1]]['pos'])
         if (not (self.getPokLstHead().node_src == self.path[0] and self.getPokLstHead().node_dest == self.path[1])) or \
                 (self.pokList[0].get_node_src() == self.path[0] and self.pokList[0].get_node_dest() == self.path[1]):
@@ -203,11 +214,11 @@ class Agent:
         p1 = Point(x1, y1)
         p2 = Point(x2, y2)
         destP = graph.nodes[self.getPath()[1]]['pos']
-        if self.get_pos_Vchange().distance(p1) + p1.distance(destP) == self.get_pos_Vchange().distance(destP):
+        if self.passedPokPos.distance(p1) + p1.distance(destP) == self.passedPokPos.distance(destP):
             return p1
         else:
             return p2
 
     def __eq__(self, other):
-        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src\
+        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src \
                and self.speed == other.speed and self.pos == other.pos

@@ -51,7 +51,7 @@ def tsp(graph: nx.DiGraph, nodesToVisit: list):
     return totalDist, shortestPath
 
 
-def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon):
+def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, timeStamps: list):
     """Chooses the best agent to allocate the new pokemon to, using TSP. Returns the ID of the agent which was chosen
     for the new pokemon"""
     minDist = sys.maxsize
@@ -67,5 +67,5 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon)
             minAgentId = i
             minLst = tempLst
     agentLst[minAgentId].setPokLst(minLst)
-    agentLst[minAgentId].setPath(minPath)
-    return minAgentId
+    timeStamps = agentLst[minAgentId].setPath(minPath, graph, timeStamps)
+    return agentLst, timeStamps
