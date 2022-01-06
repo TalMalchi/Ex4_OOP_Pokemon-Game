@@ -152,7 +152,6 @@ class Agent:
                     time_to_pokemon = percentOfEdgePassedTillPokemon * (
                             graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
                     percentOfEdgePassedFromPokemon = 1 - percentOfEdgePassedTillPokemon
-                    total_dist = dist_src_dst - dist_pokemon_src  # total distance
                     time_from_pokemon = percentOfEdgePassedFromPokemon * (
                             graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
                     timeStamps.append((timeStamps[-1][0] + time_to_pokemon, self.id))
