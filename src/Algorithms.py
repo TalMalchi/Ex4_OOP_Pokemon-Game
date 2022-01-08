@@ -32,23 +32,33 @@ def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: n
         return len(pokLst)
 
 
-def tsp(graph: nx.DiGraph, nodesToVisit: list):
+def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
     """Calculates the shortest path between a list of nodes, given the graph. Does not calculate the time needed to
     traverse (it is also dependent on speed of agent."""
-    shortestPathDist = sys.maxsize
-    minj = 0
+    copyNodesToVisit = srcNodesToVisit.copy()  # copy the original list so that it remains unchanged
+    shortestPathDist = sys.maxsize  # init the shortest path distance variable to max size possible
     totalDist = 0
-    shortestPath = []
-    for i in range(len(nodesToVisit)):
-        for j in range(len(nodesToVisit)):
-            currShortestPathDist = nx.shortest_path_length(graph, source=i, target=j)
-            if shortestPathDist > currShortestPathDist:
-                minj = j
-                shortestPathDist = currShortestPathDist
-        totalDist += shortestPathDist
-        shortestPath.append(nx.shortest_path(graph, source=i, target=minj))
-        nodesToVisit.pop(i)
-    return totalDist, shortestPath
+    totalShortestPath = []
+    minIndex = 0
+    while len(copyNodesToVisit) != 1:
+        for j in range(1, len(copyNodesToVisit)):
+            if len(totalShortestPath) == 0:
+                currMinLength = nx.shortest_path_length(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[j])
+            else:
+                currMinLength = nx.shortest_path_length(graph, source=totalShortestPath[-1], target=copyNodesToVisit[j])
+            if currMinLength < shortestPathDist:
+                shortestPathDist = currMinLength
+                minIndex = j
+        currMinPath = nx.shortest_path(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[minIndex])
+        for node in currMinPath:
+            totalShortestPath.append(node)
+        if minIndex >= 1:
+            totalShortestPath.append(pokLst[minIndex - 1].get_node_dest())
+            totalDist += shortestPathDist + \
+                         graph.get_edge_data(pokLst[minIndex - 1].get_node_src(), pokLst[minIndex - 1].get_node_dest())[
+                             'weight']
+        copyNodesToVisit.pop(0)
+    return totalDist, totalShortestPath
 
 
 def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, timeStamps: list):
@@ -56,16 +66,24 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
     for the new pokemon"""
     minDist = sys.maxsize
     minPath = []
-    minLst = []
+    minPokLst = []
     minAgentId = 0
     for i in range(len(agentLst)):
-        tempLst = agentLst[i].getPokLst().append(pokemon)
-        tempShortDist, tempShortPath = tsp(graph, tempLst)
-        if minDist > tempShortDist:
+        # pokemon list of agent, if it were to be permanently added to it (to be verified)
+        tempPokLst = agentLst[i].getPokLst()
+        tempPokLst.append(pokemon)
+
+        # Source nodes of all pokemons to be passed (hypothetically)
+        srcNodeListToPass = [agentLst[i].getDest()]
+        for pok in tempPokLst:
+            srcNodeListToPass.append(pok.get_node_src())
+
+        tempShortDist, tempShortPath = tsp(graph, srcNodeListToPass, tempPokLst)
+        if tempShortDist < minDist:
             minDist = tempShortDist
             minPath = tempShortPath
-            minAgentId = i
-            minLst = tempLst
-    agentLst[minAgentId].setPokLst(minLst)
+            minAgentId = agentLst[i].getId()
+            minPokLst = tempPokLst
+    agentLst[minAgentId].setPokLst(minPokLst)
     timeStamps = agentLst[minAgentId].setPath(minPath, graph, timeStamps)
     return agentLst, timeStamps

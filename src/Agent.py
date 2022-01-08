@@ -120,7 +120,7 @@ class Agent:
 
     def getPokLst(self):
         """get the list of pokemons for each agent"""
-        return self.pokList
+        return list(self.pokList)
 
     def getPokLstHead(self) -> Pokemon:
         """get the list of pokemons for each agent"""
@@ -129,28 +129,31 @@ class Agent:
     def setPokLst(self, PokemonsListPerAgent):
         self.pokList = PokemonsListPerAgent
 
-    def addPokemonsListPerAgent(self, pok):
+    def addToPokList(self, pok: Pokemon):
         self.pokList.append(pok)
+
+    def popHeadPokLst(self) -> Pokemon:
+        return self.pokList.pop(0)
 
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list):
         """timestamps := list of the timestamps when the 'move' method from client should be called"""
-        for timeId in range(len(timeStamps)):
+        for timeId in range(len(timeStamps)):  # Remove existing timestamps of current agent
             if timeStamps[timeId][1] == self.id:
                 timeStamps.pop(timeId)
                 timeId -= 1
         for i in range(len(self.path) - 1):  # go all over the agent's path
             pokFound = False
             for pok in self.pokList:
-                if i == pok.node_src and (i + 1) == pok.node_dest:  # if the next edge has a pokemmon
-                    # TODO currently the assumption is that there are no 2 pokemons on 1 edge
-                    pokFound = True
-                    dist_src_dst = graph.nodes[pok.node_src]['pos'].distance.graph.nodes[pok.node_dest][
-                        'pos']  # total distance of the edge
-                    dist_pokemon_src = graph.nodes[pok.node_src]['pos'].distance(
-                        pok.pos)  # distance between src node to pokemon
+                if self.path[i] == pok.node_src and self.path[i + 1] == pok.node_dest:  # if the next edge has a pokemmon
+                    # Currently, the assumption is that there are no 2 pokemons on 1 edge
+                    pokFound = True  # pokemon found
+                    dist_src_dst = graph.nodes[pok.get_node_src()]['pos'].distance(graph.nodes[pok.get_node_dest()][
+                        'pos'])  # total distance of the edge
+                    dist_pokemon_src = graph.nodes[pok.get_node_src()]['pos'].distance(
+                        pok.getPos())  # distance between src node to pokemon
                     percentOfEdgePassedTillPokemon = dist_pokemon_src / dist_src_dst
                     time_to_pokemon = percentOfEdgePassedTillPokemon * (
-                            graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
+                            graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed)  # total time to pass the distance from src to pokemon
                     percentOfEdgePassedFromPokemon = 1 - percentOfEdgePassedTillPokemon
                     time_from_pokemon = percentOfEdgePassedFromPokemon * (
                             graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
