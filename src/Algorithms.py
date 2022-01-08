@@ -1,10 +1,9 @@
 import random
 import sys
 
-import networkx as nx
-
 from src.Pokemon import Pokemon
 from src.client import Client
+from timeStampsDemo import *
 
 
 def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: nx.DiGraph) -> int:
@@ -61,6 +60,19 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
     return totalDist, totalShortestPath
 
 
+def sortPokLst(graph: nx.DiGraph, agent: Agent, oldPokLst: list):
+    agentPath = agent.getPath()
+    newPokLst = []
+    for i in range(len(agentPath) - 1):
+        currSrc = agentPath[i]
+        currDest = agentPath[i + 1]
+        for pok in oldPokLst:
+            if currSrc == pok.get_node_src() and currDest == pok.get_node_dest():
+                newPokLst.append(pok)
+                oldPokLst.remove(pok)
+    return newPokLst
+
+
 def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, timeStamps: list):
     """Chooses the best agent to allocate the new pokemon to, using TSP. Returns the ID of the agent which was chosen
     for the new pokemon"""
@@ -84,6 +96,16 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
             minPath = tempShortPath
             minAgentId = agentLst[i].getId()
             minPokLst = tempPokLst
-    agentLst[minAgentId].setPokLst(minPokLst)
-    timeStamps = agentLst[minAgentId].setPath(minPath, graph, timeStamps)
+    minPath.insert(0, agentLst[minAgentId].getSrc())
+    agentLst[minAgentId].setPath(minPath)
+    sortedPokLst = sortPokLst(graph, agentLst[minAgentId], minPokLst)
+    agentLst[minAgentId].setPokLst(sortedPokLst)
+
+    pokIndex = 0
+    for i in range(len(minPath)):
+        if sortedPokLst[0].get_node_dest() == minPath[i]:
+            pokIndex = i
+            break
+
+    timeStamps = pokemonTimeStamps(timeStamps, graph, agentLst[minAgentId], pokIndex)
     return agentLst, timeStamps

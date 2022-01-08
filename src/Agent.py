@@ -96,11 +96,10 @@ class Agent:
     def setDest(self, dest):
         self.dest = dest
 
-    def addToPath(self, lst: list, graph: nx.DiGraph, timeStamps: list):
+    def addToPath(self, lst: list):
         """Set the path the agent needs to move on to get the pokemon as fast as he can"""
         for i in lst:
             self.path.append(i)
-        return self.addTimeStamps(graph, timeStamps)
 
     def getPathHead(self):
         return self.path[0]
@@ -114,9 +113,8 @@ class Agent:
         """Get the path the agent need to move on to get the pokemon as fast as he can"""
         return self.path
 
-    def setPath(self, path: list, graph: nx.DiGraph, timeStamps: list):
+    def setPath(self, path: list):
         self.path = path
-        return self.addTimeStamps(graph, timeStamps)
 
     def getPokLst(self):
         """get the list of pokemons for each agent"""
@@ -148,7 +146,7 @@ class Agent:
                     # Currently, the assumption is that there are no 2 pokemons on 1 edge
                     pokFound = True  # pokemon found
                     dist_src_dst = graph.nodes[pok.get_node_src()]['pos'].distance(graph.nodes[pok.get_node_dest()][
-                        'pos'])  # total distance of the edge
+                                                                                       'pos'])  # total distance of the edge
                     dist_pokemon_src = graph.nodes[pok.get_node_src()]['pos'].distance(
                         pok.getPos())  # distance between src node to pokemon
                     percentOfEdgePassedTillPokemon = dist_pokemon_src / dist_src_dst
@@ -156,7 +154,7 @@ class Agent:
                             graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed)  # total time to pass the distance from src to pokemon
                     percentOfEdgePassedFromPokemon = 1 - percentOfEdgePassedTillPokemon
                     time_from_pokemon = percentOfEdgePassedFromPokemon * (
-                            graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed) #total time to pass the distance from pokemon to dest
+                            graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed)  # total time to pass the distance from pokemon to dest
                     if len(timeStamps) >= 1:
                         lastElement = timeStamps[-1][0]
                     else:

@@ -2,8 +2,9 @@ import time
 
 from DataInput import *
 from src.Algorithms import *
+from timeStampsDemo import *
 
-EPS = 0.001
+EPS = 0.01
 
 if __name__ == '__main__':
     # default port
@@ -24,45 +25,46 @@ if __name__ == '__main__':
     agentLst = loadAllAgents(client.get_agents())
     for i in range(numOfAssignedAgentsToPok):  # choosing the next destination for nodes with assigned pokemons, adding
         # their destination to the agent's path
-        client.choose_next_edge(
-            '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].get_node_dest()) + '}')
+        client.choose_next_edge('{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].get_node_dest()) + '}')
         agentLst[i].addToPokList(pokLst[i])
-        timeStamps = agentLst[i].addToPath([pokLst[i].get_node_src(), pokLst[i].get_node_dest()], graph, timeStamps)
-        # Update timestamps as well
+        agentLst[i].addToPath([pokLst[i].get_node_src(), pokLst[i].get_node_dest()])  # add to list
+        timeStamps = initialTimeStamps(timeStamps, graph, agentLst[i])  # Update timestamps
     client.move()
     while client.is_running() == 'true':
 
         tempTime = time.time() - startTime
-        if abs(tempTime - (timeStamps[0][0] + EPS)) < EPS:
+        if abs(tempTime - (timeStamps[0][0] + 0.0)) < 0.02:
             timeStamps.pop(0)
             client.move()
-            print(client.get_info())  # todo
-            print(agentLst[0].path)
-            print(agentLst[0].path[1])
-            print(tempTime)
-            # print(pokLst)
-            print()
+
             tempAgentLst = loadAllAgents(client.get_agents())  # temporarily load agents from client
             for i in range(len(agentLst)):
-                print(i)  # todo
-                agentLst[i].speed = tempAgentLst[i].speed  # update current agents speed and pos
-                agentLst[i].pos = tempAgentLst[i].pos
-                agentLst[i].value = tempAgentLst[i].value
+                agentLst[i].set_speed(tempAgentLst[i].speed)  # update current agents speed and pos
+                agentLst[i].setPos(tempAgentLst[i].pos)
+                agentLst[i].setValue(tempAgentLst[i].value)
                 agentLst[i].setSrc(tempAgentLst[i].getSrc())
                 agentLst[i].setDest(tempAgentLst[i].getDest())
+
+                print(client.get_info())  # todo
+                print(agentLst[0])
+                print(agentLst[0].path)
+                print(tempTime)
+                print(agentLst[i].getSrc())
+                print(agentLst[i].getDest())
+                print(pokLst)
+                print()
+
                 if agentLst[i].getDest() == -1:  # agent arrived at intersection of nodes
-                    poppedNode = agentLst[
-                        i].removePathHead()  # node which was the src node of the agent's previous edge
-                    client.choose_next_edge(  # sending the agent towards the next node in its path
-                        '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(
-                            agentLst[i].getPath()[1]) + '}')
+                    poppedNode = agentLst[i].removePathHead()  # node which was the src node of the agent's previous edge
+                    stringToSend = '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(agentLst[i].getPath()[1]) + '}'
+                    client.choose_next_edge(stringToSend)  # sending the agent towards the next node in its path
                     agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
                     agentLst[i].setPassedPokPos(graph.nodes[poppedNode]['pos'])
                     if len(agentLst[i].getPath()) >= 2:
                         agentLst[i].setSrc(agentLst[i].getPath()[0])
                         agentLst[i].setDest(agentLst[i].getPath()[1])
 
-                if agentLst[i].getPos().distance(agentLst[i].getPokLstHead().pos) < EPS:
+                if agentLst[i].getPos().distance(agentLst[i].getPokLstHead().pos) < 0.002:
                     agentLst[i].popHeadPokLst()
                     agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
                     agentLst[i].setPassedPokPos(agentLst[i].getPos())
@@ -70,10 +72,10 @@ if __name__ == '__main__':
                     pokLst = appendToAllPokemons(client.get_pokemons(), graph, pokLst)  # update pokemon list
 
                     # assign new pokemon
+                    startTime = time.time()
                     agentLst, timeStamps = assignNewPokemonToAgent(graph, agentLst, pokLst[-1], timeStamps)
 
-    print(client.get_info())
+    print(client.get_info())  # todo
     print(agentLst)
     print(pokLst)
     print()
-
