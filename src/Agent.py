@@ -126,7 +126,7 @@ class Agent:
         """get the list of pokemons for each agent"""
         return self.pokList[0]
 
-    def setPokLst(self, PokemonsListPerAgent):
+    def setPokLst(self, PokemonsListPerAgent: list):
         self.pokList = PokemonsListPerAgent
 
     def addToPokList(self, pok: Pokemon):
@@ -156,14 +156,18 @@ class Agent:
                             graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed)  # total time to pass the distance from src to pokemon
                     percentOfEdgePassedFromPokemon = 1 - percentOfEdgePassedTillPokemon
                     time_from_pokemon = percentOfEdgePassedFromPokemon * (
-                            graph.get_edge_data(pok.node_src, pok.node_dest)['weight'] / self.speed)
-                    timeStamps.append((timeStamps[-1][0] + time_to_pokemon, self.id))
-                    timeStamps.append((timeStamps[-1][0] + time_from_pokemon, self.id))
+                            graph.get_edge_data(pok.get_node_src(), pok.get_node_dest())['weight'] / self.speed) #total time to pass the distance from pokemon to dest
+                    if len(timeStamps) >= 1:
+                        lastElement = timeStamps[-1][0]
+                    else:
+                        lastElement = 0
+                    timeStamps.append((lastElement + time_to_pokemon, self.id))  # add the time to timeStamps list
+                    timeStamps.append((lastElement + time_from_pokemon, self.id))
                     break
-            if pokFound is False:
-                timeToNextNode = graph.get_edge_data(self.path[i], self.path[i + 1])['weight'] / self.speed
+            if pokFound is False:  # if pokemon hasn't been found on the edge
+                timeToNextNode = graph.get_edge_data(self.path[i], self.path[i + 1])['weight'] / self.speed  # total time to the next node
                 if len(timeStamps) >= 1:
-                    timeStamps.append((timeStamps[-1] + timeToNextNode, self.id))
+                    timeStamps.append((timeStamps[-1][0] + timeToNextNode, self.id))  # add the time to timeStamps list
                 else:
                     timeStamps.append((timeToNextNode, self.id))
         sorted(timeStamps, key=lambda x: x[0])
