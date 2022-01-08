@@ -46,6 +46,7 @@ class Client:
 
     def add_agent(self, json_of_node):
         """
+        מאיפה הסוכן מתחיל
         param json_of_node should be in this format: '{"id":0}'
         (replace 0 with the desired starting node for the agent.)
         returns 'true' (as str) iff the agent has been added succesfuly
@@ -57,6 +58,7 @@ class Client:
 
     def get_graph(self):
         """
+        מתחיל את הגרף שבשלב הנוכחי
         returns the graph as json str. for example:\n
         {
             "Edges":[

@@ -14,7 +14,7 @@ class Pokemon:
             self.parsePokemon(jsonStr)
         else:
             self.value = value  # double value
-            self.type = type  # -1 or 1
+            self.type = type  # -1 or 1 --> if the pokemon is up or down
             self.pos = pos  # Location Class
         self.node_src = None  # ID of node
         self.node_dest = None  # ID of node
