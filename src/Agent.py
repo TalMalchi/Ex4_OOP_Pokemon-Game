@@ -9,8 +9,7 @@ from src.Pokemon import Pokemon
 
 class Agent:
 
-    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,
-                 pos: Point = Point(), jsonStr=None):
+    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,pos: Point = Point(), jsonStr=None):
         self.pokList = []
         if jsonStr is not None:
             self.parseAgent(jsonStr)

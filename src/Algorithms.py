@@ -109,3 +109,5 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
 
     timeStamps = pokemonTimeStamps(timeStamps, graph, agentLst[minAgentId], pokIndex)
     return agentLst, timeStamps
+
+#### check about last index

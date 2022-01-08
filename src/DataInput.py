@@ -7,7 +7,7 @@ from src.Point import Point
 from src.Pokemon import Pokemon
 
 
-def loadGraph(stringGraph):
+def loadGraph(stringGraph):  #have test
     jsonGraph = json.loads(stringGraph)
     graph = nx.DiGraph()
     for node in jsonGraph["Nodes"]:
@@ -19,7 +19,7 @@ def loadGraph(stringGraph):
     return graph
 
 
-def loadAllPokemons(pokemons, graph: nx.DiGraph):
+def loadAllPokemons(pokemons, graph: nx.DiGraph): #have test
     pokLst = []
     jsonTemp = json.loads(pokemons)
     for i in range(len(jsonTemp['Pokemons'])):
@@ -28,7 +28,7 @@ def loadAllPokemons(pokemons, graph: nx.DiGraph):
     return pokLst
 
 
-def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
+def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):#TODO test
     """Check if pokemon exists in the list of pokemons. Add it if it does not. As the position of the pokemon is
     immutable, the comparison is performed on it"""
     jsonTemp = json.loads(pokemons)
@@ -45,7 +45,7 @@ def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
     return pokLst
 
 
-def loadAllAgents(agents):
+def loadAllAgents(agents): #have test
     agentLst = []
     jsonTemp = json.loads(agents)
     for i in range(len(jsonTemp['Agents'])):
@@ -53,9 +53,10 @@ def loadAllAgents(agents):
     return agentLst
 
 
-def addAllTimeStamps(agentLst: list, graph: nx.DiGraph, startTime):
-    timestamps = []
-    for agent in agentLst:
-        timestamps.append(agent.addTimeStamps(graph, timestamps, agent.getPath(), startTime))
-    return timestamps
+# def addAllTimeStamps(agentLst: list, graph: nx.DiGraph, startTime): #TODO test (they said never used)
+#     """add all timestemps of each agent to one list"""
+#     timestamps = []
+#     for agent in agentLst:
+#         timestamps.append(agent.addTimeStamps(graph, timestamps, agent.getPath(), startTime))
+#     return timestamps
 
