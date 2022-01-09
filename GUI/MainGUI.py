@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 
 import pygame as pg
 from pygame.locals import *
-from src.Point import Point
+from src.Point import *
 # from GUI.InputField import InputField
 from GUI import Node
 from GUI.Button import Button
@@ -17,35 +17,37 @@ def init(g: nx.DiGraph()):
     gui.init_gui()
 
 
-def checkMinMax(graph: nx.DiGraph()):
+def checkMinMax(graph: nx.DiGraph()):  # graph: nx.DiGraph()):
     # static variables, for GUI
     min_value = {'x': -sys.maxsize, 'y': -sys.maxsize, 'z': -sys.maxsize}
     max_value = {'x': sys.maxsize, 'y': sys.maxsize, 'z': sys.maxsize}
-    for i in graph.nodes:
+    for i in graph.nodes():
         # define min max values to present the graph
-        if min_value['x'] < i['pos'].getX():
-            min_value['x'] = i['pos'].x
-        if min_value['y'] < i['pos'].y:
-            min_value['y'] = i['pos'].y
+        if min_value['x'] < graph.nodes()[i]['pos'].getX():
+            min_value['x'] = graph.nodes()[i]['pos'].getX()
+        if min_value['y'] < graph.nodes()[i]['pos'].getY():
+            min_value['y'] = graph.nodes()[i]['pos'].getY()
 
-        if max_value['x'] > i['pos'].x:
-            max_value['x'] = i['pos'].x
-        if max_value['y'] > i['pos'].y:
-            max_value['y'] = i['pos'].עy
+        if max_value['x'] > graph.nodes()[i]['pos'].getX():
+            max_value['x'] = graph.nodes()[i]['pos'].getX()
+        if max_value['y'] > graph.nodes()[i]['pos'].getY():
+            max_value['y'] = graph.nodes()[i]['pos'].getY()
 
     return min_value, max_value
 
 
-def normalize_x(graph: nx.DiGraph , screen_x_size, currNodeVal) -> float:
+def normalize_x(graph: nx.DiGraph(), screen_x_size, currNodeVal) -> float:
     """Normalize the x value according to the current size of the screen"""
-    return (currNodeVal - checkMinMax(graph).min_value['x']) / (
-            checkMinMax(graph).max_value['x'] - checkMinMax(graph).min_value['x']) * (screen_x_size - 20) + 10
+    result=checkMinMax(graph)
+    return (currNodeVal - result[0]['x']) / (
+            result[1]['x'] - result[0]['x']) * (screen_x_size - 20) + 10
 
 
-def normalize_y(screen_y_size, currNodeVal) -> float:
+def normalize_y(graph: nx.DiGraph(), screen_y_size, currNodeVal) -> float:
     """Normalize the y value according to the current size of the screen"""
-    return (currNodeVal - Node.min_value['y']) / (
-            Node.max_value['y'] - Node.min_value['y']) * (screen_y_size - 20) + 10
+    result = checkMinMax(graph)
+    return (currNodeVal - result[0]['y']) / (
+            result[1]['y'] - result[0]['y']) * (screen_y_size - 20) + 10
 
 
 def get_away_from_edge_of_screen(x, y, screen_x_size, screen_y_size):
@@ -101,8 +103,8 @@ class GUI:
             y = node.get_y()
 
             # Normalizing values to be between the size of the canvas
-            x = normalize_x(screen_x_size, x)
-            y = normalize_y(screen_y_size, y)
+            x = normalize_x(self.graph, screen_x_size, x)
+            y = normalize_y(self.graph, screen_y_size, y)
 
             pg.draw.circle(screen, (0, 0, 0), (x, y), GUI.circle_rad)  # drawing the nodes themselves
 
@@ -118,21 +120,20 @@ class GUI:
     def draw_one_edge(self, screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, colour):
         """Function to plot a single edge according to all the data received by the function."""
         # Setting variables for readability and for effectiveness of the code
-        src_node = self.graph.nodes[edgeSrcID]
-        pos_src = self.graph.nodes[edgeSrcID]['pos']
-        pos_src_x = pos_src.x
-        pos_src_y= pos_src.y
 
-        dest_node = self.graph.nodes[edgeDestID]
+        pos_src = self.graph.nodes[edgeSrcID]['pos']
+        src_node_x = pos_src.x
+        src_node_y = pos_src.y
+
         pos_dest = self.graph.nodes[edgeDestID]['pos']
-        pos_dest_x = pos_dest.x
-        pos_dest_y = pos_dest.y
+        dest_node_x = pos_dest.x
+        dest_node_y = pos_dest.y
 
         # Normailizing
-        src_node_x = normalize_x(screen_x_size, pos_src_x)
-        src_node_y = normalize_y(screen_y_size, pos_src_y)
-        dest_node_x = normalize_x(screen_x_size, pos_dest_x)
-        dest_node_y = normalize_y(screen_y_size, pos_dest_y)
+        src_node_x = normalize_x(self.graph, screen_x_size, src_node_x)
+        src_node_y = normalize_y(self.graph, screen_y_size, src_node_y)
+        dest_node_x = normalize_x(self.graph, screen_x_size, dest_node_x)
+        dest_node_y = normalize_y(self.graph, screen_y_size, dest_node_y)
 
         # Below we find the point on the edge that ends at the circles' circumference, so that the arrow does not
         # seem "inside" the node
@@ -149,12 +150,13 @@ class GUI:
         # Correlating y values to each of the x values
         y1 = (m * x1) + b
         y2 = (m * x2) + b
-        point1 = [x1, y1]
-        point2 = [x2, y2]
+        point1 = [x1, y1, 0]
+        point2 = [x2, y2, 0]
 
         # Finding the wanted node out of the 2 received
         # Point(src_node_x, src_node_y, 0).distance(Point(point1[0], point1[1], 0))
-        if Point([src_node_x, src_node_y], 0).distance(Point(point1)) < Point([src_node_x, src_node_y, 0]).distance(Point(point2)):
+        if Point(src_node_x, src_node_y, 0).distance(point1) < Point(src_node_x, src_node_y, 0).distance(
+                point2):
             # if distance([src_node_x, src_node_y], point1) < distance([src_node_x, src_node_y,0], point2):
             dest_node_x = point1[0]
             dest_node_y = point1[1]
@@ -171,13 +173,11 @@ class GUI:
         """Function to iterate and plot all edges of the graph """
 
         for edgeSrcID in self.graph.edges:
-            #curr = self.graph.edges(edgeSrcID)
+            # curr = self.graph.edges(edgeSrcID)
             self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID[0], edgeSrcID[1], (0, 0, 0))
 
             #   dist_pokemon_src = graph.nodes[pok.get_node_src()]['pos']
-                #for edgeDestID in self.graph.out_edges(edgeSrcID.dataG.edges.data("weight", default=1)):
-
-
+            # for edgeDestID in self.graph.out_edges(edgeSrcID.dataG.edges.data("weight", default=1)):
 
         # def draw_graph_edges(self, screen, screen_x_size, screen_y_size):
         #     """Function to iterate and plot all edges of the graph """
@@ -214,9 +214,9 @@ class GUI:
 
         # Initializing buttons
         self.button_load = Button("Load", (0, 0))
-        #self.button_center = Button("Center Point", ((self.button_load.size[0] + self.button_load.x + 3), 0))
-        #self.button_short_path = Button("Shortest Path", ((self.button_center.size[0] + self.button_center.x + 3), 0))
-        #self.button_TSP = Button("TSP", ((self.button_short_path.size[0] + self.button_short_path.x + 3), 0))
+        # self.button_center = Button("Center Point", ((self.button_load.size[0] + self.button_load.x + 3), 0))
+        # self.button_short_path = Button("Shortest Path", ((self.button_center.size[0] + self.button_center.x + 3), 0))
+        # self.button_TSP = Button("TSP", ((self.button_short_path.size[0] + self.button_short_path.x + 3), 0))
         start_timer = self.redraw(screen, screen_x_size, screen_y_size)
 
         # Initializing flags for future use
