@@ -6,6 +6,7 @@ In this Assignment we asked to design a “Pokemon game” in which given a weig
 The pokemons are located on the graph’s (directed) edges, therefore, the agent needs to take (aka walk) the proper edge to “grab” the pokemon.
 Our goal is to maximize the overall sum of weights of the “grabbed” pokemons (while not exceeding the maximum amount of server calls allowed in a second - 10 max).
 In other words, we are mainly interested in maximizing the overall score - which is denoted as “grade” - the sum of all the pokemon weight as caught by all the “Agents”. 
+You can see how the GUI looks like here: https://www.youtube.com/watch?v=pDahaEDAS_I
  
  ### Technical Details About The Game
  
