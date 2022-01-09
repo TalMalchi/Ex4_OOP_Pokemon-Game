@@ -3,43 +3,35 @@ import time
 from DataInput import *
 from GUI.MainGUI import init
 from src.Algorithms import *
+from timeStampsDemo import *
 
 EPS = 0.01
 
 if __name__ == '__main__':
-    try:
-        # default port
-        PORT = 6666
-        # server host (default localhost 127.0.0.1)
-        HOST = '127.0.0.1'
-        client = Client()  # init of Client
-        client.start_connection(HOST, PORT)  # init connection to server
-        graph = loadGraph(client.get_graph())  # load the graph (as instance of networkx graph)
-        pokLst = loadAllPokemons(client.get_pokemons(), graph)  # load Pokemon list
-        caseInfo = json.loads(client.get_info())
-        numOfAgents = caseInfo['GameServer']['agents']
-        numOfAssignedAgentsToPok = assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
-        gui = init(graph)  # init GUI instance
-        gui.init_gui()
-        client.start()  # Game starts here (the timer, too)
-        startTime = time.time()
-        timeStamps = []  # list of tuples
-        agentLst = loadAllAgents(client.get_agents())
-        for i in range(numOfAssignedAgentsToPok):  # choosing the next destination for nodes with assigned pokemons, adding
-            # their destination to the agent's path
-            client.choose_next_edge('{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].get_node_dest()) + '}')
-            agentLst[i].addToPokList(pokLst[i])
-            pokLst[i].assigned = True
-            agentLst[i].addToPath([pokLst[i].get_node_src(), pokLst[i].get_node_dest()])  # add to list
-        client.move()
+    # default port
+    PORT = 6666
+    # server host (default localhost 127.0.0.1)
+    HOST = '127.0.0.1'
+    client = Client()  # init of Client
+    client.start_connection(HOST, PORT)  # init connection to server
+    graph = loadGraph(client.get_graph())  # load the graph (as instance of networkx graph)
+    pokLst = loadAllPokemons(client.get_pokemons(), graph)  # load Pokemon list
+    caseInfo = json.loads(client.get_info())
+    numOfAgents = caseInfo['GameServer']['agents']
+    numOfAssignedAgentsToPok = assignAgentSrcNodes(numOfAgents, client, pokLst, graph)
 
-        tempAgentLst = loadAllAgents(client.get_agents())  # temporarily load agents from client
-        for i in range(len(agentLst)):
-            agentLst[i].set_speed(tempAgentLst[i].speed)  # update current agents speed and pos
-            agentLst[i].setPos(tempAgentLst[i].pos)
-            agentLst[i].setValue(tempAgentLst[i].value)
-            agentLst[i].setSrc(tempAgentLst[i].getSrc())
-            agentLst[i].setDest(tempAgentLst[i].getDest())
+    client.start()  # Game starts here (the timer, too)
+    startTime = time.time()
+    timeStamps = []  # list of tuples
+    agentLst = loadAllAgents(client.get_agents())
+    for i in range(numOfAssignedAgentsToPok):  # choosing the next destination for nodes with assigned pokemons, adding
+        # their destination to the agent's path
+        client.choose_next_edge('{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(pokLst[i].get_node_dest()) + '}')
+        agentLst[i].addToPokList(pokLst[i])
+        agentLst[i].addToPath([pokLst[i].get_node_src(), pokLst[i].get_node_dest()])  # add to list
+        timeStamps = initialTimeStamps(timeStamps, graph, agentLst[i])  # Update timestamps
+    client.move()
+    while client.is_running() == 'true':
 
         for pok in pokLst:
             if not pok.assigned:
