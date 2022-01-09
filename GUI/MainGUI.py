@@ -33,7 +33,7 @@ def checkMinMax(graph: nx.DiGraph()):
         if max_value['y'] > i['pos'].getY():
             max_value['y'] = i['pos'].getY()
 
-    return (min_value, max_value)
+    return min_value, max_value
 
 
 def normalize_x(screen_x_size, currNodeVal) -> float:
