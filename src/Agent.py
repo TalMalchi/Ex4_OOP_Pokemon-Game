@@ -9,7 +9,7 @@ from src.Pokemon import Pokemon
 
 class Agent:
 
-    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,pos: Point = Point(), jsonStr=None):
+    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0, pos: Point = Point(), jsonStr=None):
         self.pokList = []
         if jsonStr is not None:
             self.parseAgent(jsonStr)
@@ -211,7 +211,7 @@ class Agent:
         qb = (2 * b * m) - (2 * m * yStart) - (2 * xStart)
         qc = (b ** 2) - (2 * yStart * b) + (xStart ** 2) - (dist ** 2)
 
-        x1, x2 = self.quadratic(qa, qb, qc)
+        x1, x2 = quadratic(qa, qb, qc)
         y1 = m * x1 + b
         y2 = m * x2 + b
         p1 = Point(x1, y1)
