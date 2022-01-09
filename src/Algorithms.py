@@ -38,7 +38,7 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
     totalDist = 0
     totalShortestPath = []
     minIndex = 0
-    while len(copyNodesToVisit) > 1:
+    while len(copyNodesToVisit) != 1:
         for j in range(1, len(copyNodesToVisit)):
             if len(totalShortestPath) == 0:  # if there is just one edge in the path, we will set it to the CurrminLen
                 currMinLength = nx.shortest_path_length(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[j])
@@ -73,7 +73,7 @@ def sortPokLst(graph: nx.DiGraph, agent: Agent, oldPokLst: list):
     return newPokLst
 
 
-def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, flag=0):  # , timeStamps: list):
+def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon):  # , timeStamps: list):
     """Chooses the best agent to allocate the new pokemon to, using TSP. Returns the ID of the agent which was chosen
     for the new pokemon"""
     minDist = sys.maxsize
@@ -82,20 +82,13 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
     minAgentId = 0
     for i in range(len(agentLst)):
         # pokemon list of agent, if it were to be permanently added to it (to be verified)
-        if flag == 0:
-            tempPokLst = agentLst[i].getPokLst()
-        else:
-            try:
-                tempPokLst = agentLst[i].getPokLst()[1:]
-            except Exception:
-                tempPokLst = []
+        tempPokLst = agentLst[i].getPokLst()
         tempPokLst.append(pokemon)
 
         # Source nodes of all pokemons to be hypothetically passed
         srcNodeListToPass = [agentLst[i].getDest()]
         for pok in tempPokLst:
             srcNodeListToPass.append(pok.get_node_src())
-        srcNodeListToPass = list(dict.fromkeys(srcNodeListToPass))  # removing duplicate values from list
 
         # check the sortestPath for each agent on the same pokemonLst
         tempShortDist, tempShortPath = tsp(graph, srcNodeListToPass, tempPokLst)
