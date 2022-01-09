@@ -28,17 +28,17 @@ def loadAllPokemons(pokemons, graph: nx.DiGraph): #have test
     return pokLst
 
 
-# def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
-#     tempLst = loadAllPokemons(pokemons, graph)
-#     for i in pokLst:
-#         if i in tempLst:
-#             tempLst.remove(i)
-#     for i in tempLst:
-#         pokLst.append(i)
-#     pokLst.pop(0)
-#     return pokLst
+def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
+    tempLst = loadAllPokemons(pokemons, graph)
+    for i in pokLst:
+        if i in tempLst:
+            tempLst.remove(i)
+    for i in tempLst:
+        pokLst.append(i)
+    pokLst.pop(0)
+    return pokLst
 
-# def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
+# def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):#TODO test
 #     """Check if pokemon exists in the list of pokemons. Add it if it does not. As the position of the pokemon is
 #     immutable, the comparison is performed on it"""
 #     jsonTemp = json.loads(pokemons)

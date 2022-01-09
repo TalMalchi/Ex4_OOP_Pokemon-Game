@@ -7,6 +7,7 @@ EPS = 0.000001
 
 class Pokemon:
 
+
     def __init__(self, graph: nx.DiGraph, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
         """Creates a new Pokemon (usually from string), calculates the src and dest nodes of the edge on which the
         pokemon is located (the 'findSrcDest' fucntion)."""
@@ -20,6 +21,12 @@ class Pokemon:
         self.node_dest = None  # ID of node
         self.findSrcDest(graph)
 
+    # def parsePokemon(self, jsonObj):  # parse string pokemon to pokemon object
+    #     """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
+    #     self.value = int(jsonObj['Pokemon']['value'])
+    #     # self.value = float(jsonObj['Pokemon']['value'])
+    #     self.type = int(jsonObj['Pokemon']['type'])
+    #     self.pos = Point(string=jsonObj['Pokemon']['pos'])
     def parsePokemon(self, jsonObj):  # TODO copy to  code me # parse string pokemon to pokemon object
         """Function receives json object of pokemon and parses it, assigning values to current pokemon"""
         self.value = float(jsonObj['Pokemon']['value'])

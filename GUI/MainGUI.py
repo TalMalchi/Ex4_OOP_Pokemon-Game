@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 
 import pygame as pg
 from pygame.locals import *
-
+from src.Point import Point
 # from GUI.InputField import InputField
 from GUI import Node
 from GUI.Button import Button
@@ -24,22 +24,22 @@ def checkMinMax(graph: nx.DiGraph()):
     for i in graph.nodes:
         # define min max values to present the graph
         if min_value['x'] < i['pos'].getX():
-            min_value['x'] = i['pos'].getX()
-        if min_value['y'] < i['pos'].getY():
-            min_value['y'] = i['pos'].getY()
+            min_value['x'] = i['pos'].x
+        if min_value['y'] < i['pos'].y:
+            min_value['y'] = i['pos'].y
 
-        if max_value['x'] > i['pos'].getX():
-            max_value['x'] = i['pos'].getX()
-        if max_value['y'] > i['pos'].getY():
-            max_value['y'] = i['pos'].getY()
+        if max_value['x'] > i['pos'].x:
+            max_value['x'] = i['pos'].x
+        if max_value['y'] > i['pos'].y:
+            max_value['y'] = i['pos'].עy
 
     return min_value, max_value
 
 
-def normalize_x(screen_x_size, currNodeVal) -> float:
+def normalize_x(graph: nx.DiGraph , screen_x_size, currNodeVal) -> float:
     """Normalize the x value according to the current size of the screen"""
-    return (currNodeVal - Node.min_value['x']) / (
-            Node.max_value['x'] - Node.min_value['x']) * (screen_x_size - 20) + 10
+    return (currNodeVal - checkMinMax(graph).min_value['x']) / (
+            checkMinMax(graph).max_value['x'] - checkMinMax(graph).min_value['x']) * (screen_x_size - 20) + 10
 
 
 def normalize_y(screen_y_size, currNodeVal) -> float:
