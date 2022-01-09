@@ -84,7 +84,6 @@ class client{
 class DataInput{
 +def loadGraph(stringGraph): graph
 +def loadAllPokemons(pokemons, graph: nx.DiGraph): list
-+def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list): list
 +def loadAllAgents(agents): list
 
 }
@@ -129,6 +128,57 @@ class Point{
 + def __eq__(self, other): int
 
 
+}
+
+class Button{
+
++self.x, self.y :float
++ self.font: font
++self.text : Font
++self.size : tuple
++self.surface :
++self.surface.fill(bg)
++self.surface.blit(self.text, (2.5, 0))
++self.rect = pg.Rect(self.x, self.y, self.size[0], self.size[1])
++def show(self, screen) : None
++def click(self, event): bool
 
 }
+
+class Server{
+
+}
+class MainGUI{
+
++ def init_gui(self): None
++ def checkMinMax(graph: nx.DiGraph()):
++ def get_away_from_edge_of_screen(x, y, screen_x_size, screen_y_size): float
++ def normalize_x(screen_x_size, currNodeVal):float:
++ def normalize_y(screen_y_size, currNodeVal) :float
++ def drawArrowForEdge(screen, screen_x_size, screen_y_size, src_node_x, src_node_y, dest_node_x, dest_node_y, colour): None
++ def display_temp_text(self, screen, text: str, pos): float
++def draw_graph_nodes(self, screen, screen_x_size, screen_y_size): None
++def draw_one_edge(self, screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, colour): None
++def drawAgents(self, agentLst: list, radius: float):
+
++ def redraw(self, screen, screen_x_size, screen_y_size): sys.maxsize
++ def draw_graph_edges(self, screen, screen_x_size, screen_y_size): None
++ def __init__(self, gr: GraphAlgo): DiGraph
+ +def guiHandle(self, running, pokLst: list, agentLst: list, jsonStr: str, time_to_end):
+
+
+
+
+}
+Button-->MainGUI
+main-->MainGUI
+main-->Agent
+main-->Algorithms
+main-->Pokemon
+main-->DataInput
+main-->Client
+main-->Server
+Server-->main
+Algorithms-->Client
+Algorithms-->Agent
 @enduml
