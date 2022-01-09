@@ -166,12 +166,12 @@ class GUI:
 
     def draw_graph_edges(self, screen, screen_x_size, screen_y_size):
         """Function to iterate and plot all edges of the graph """
-        for edgeSrcID in self.graph.edges:
-            try:
-                for edgeDestID in self.graph.edges
-                    self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, (0, 0, 0))
-            except:
-                continue
+        # for edgeSrcID in self.graph.edges:
+        #     try:
+        #         for edgeDestID in self.graph.edges
+        #             self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, (0, 0, 0))
+        #     except:
+        #         continue
 
     def redraw(self, screen, screen_x_size, screen_y_size):  ######dont sure we need it
         """After a change has been made, a method to replot the graph and the buttons"""
