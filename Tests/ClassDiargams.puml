@@ -86,7 +86,6 @@ class DataInput{
 +def loadAllPokemons(pokemons, graph: nx.DiGraph): list
 +def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list): list
 +def loadAllAgents(agents): list
-+def addAllTimeStamps(agentLst: list, graph: nx.DiGraph, startTime): list
 
 }
 class Pokemon{
