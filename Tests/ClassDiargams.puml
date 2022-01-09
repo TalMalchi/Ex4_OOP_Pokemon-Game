@@ -44,10 +44,8 @@ class Agent{
 +def getPokLstHead(self) : Pokemon
 +def setPokLst(self, PokemonsListPerAgent):
 +def addPokemonsListPerAgent(self, pok):
-+def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list):
 +def quadratic(self, a, b, c): float
-+def distanceFromSrcNode(self, graph: nx.DiGraph): float
-+def find_curr_pos_of_agent(self, graph: nx.DiGraph) : Point
+
 
 
 
@@ -59,6 +57,7 @@ class Algorithms{
 +def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: nx.DiGraph) :int
 +def tsp(graph: nx.DiGraph, nodesToVisit: list): list, float
 +def def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, timeStamps: list): list, list
++def sortPokLst(graph: nx.DiGraph, agent: Agent, oldPokLst: list): list
 
 }
 
