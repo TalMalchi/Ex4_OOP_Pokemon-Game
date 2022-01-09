@@ -18,12 +18,3 @@ In other words, we are mainly interested in maximizing the overall score - which
  Additional elements are represented in the GUI, such as- overall points, moves counter, and time to end in seconds are presented, as well as a “stop” button to gracefully stop the game at any time point.
 After the game ends (each game has a fixed time - commonly 30-120 seconds) the results are printed - by the server.
 
-
-## Algorithms
-Explanations of the complex algorithms we implemented:
-
-1.Shortest Path
-
-2.Travelling Salesman Problem(TSP)-
-The function receives a directed graph, list of nodes to visit, and a pokeon list the agent should move over the and eat them.
-
