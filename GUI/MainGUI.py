@@ -6,7 +6,6 @@ import pygame as pg
 from pygame.locals import *
 
 # from GUI.InputField import InputField
-from GUI import Node
 from GUI.Button import Button
 from src.Agent import *
 
@@ -34,6 +33,29 @@ def checkMinMax(graph: nx.DiGraph()):
             max_value['y'] = i['pos'].getY()
 
     return min_value, max_value
+
+
+def normalize_x(screen_x_size, currNodeVal,) -> float:
+    """Normalize the x value according to the current size of the screen"""
+    return (currNodeVal - checkMinMax(g)['x']) / (
+            Node.max_value['x'] - Node.min_value['x']) * (screen_x_size - 20) + 10
+
+
+def normalize_y(screen_y_size, currNodeVal) -> float:
+    """Normalize the y value according to the current size of the screen"""
+    return (currNodeVal - Node.min_value['y']) / (
+            Node.max_value['y'] - Node.min_value['y']) * (screen_y_size - 20) + 10
+
+def normalize_x(screen_x_size, currNodeVal) -> float:
+    """Normalize the x value according to the current size of the screen"""
+    return (currNodeVal - checkMinMax(g)['x']) / (
+            Node.max_value['x'] - Node.min_value['x']) * (screen_x_size - 20) + 10
+
+
+def normalize_y(screen_y_size, currNodeVal) -> float:
+    """Normalize the y value according to the current size of the screen"""
+    return (currNodeVal - Node.min_value['y']) / (
+            Node.max_value['y'] - Node.min_value['y']) * (screen_y_size - 20) + 10
 
 
 def normalize_x(screen_x_size, currNodeVal,) -> float:
