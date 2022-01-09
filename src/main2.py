@@ -60,7 +60,7 @@ if __name__ == '__main__':
             if agentLst[i].getPos().distance(agentLst[i].getPokLstHead().pos) < 0.02:  # 0.02
                 agentLst[i].popHeadPokLst()
                 # A pokemon was eaten, a new pokemon exists on the graph
-                pokLst = appendToAllPokemons(client.get_pokemons(), graph, pokLst)  # update pokemon list
+                pokLst = loadAllPokemons(client.get_pokemons(), graph)  # update pokemon list
 
                 # print("totalPokList = " + str(loadAllPokemons(client.get_pokemons(), graph)))
 
