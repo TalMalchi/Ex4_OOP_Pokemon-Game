@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 
 import pygame as pg
 from pygame.locals import *
-
+from src.Point import Point
 # from GUI.InputField import InputField
 from GUI import Node
 from GUI.Button import Button
@@ -13,7 +13,7 @@ from src.Agent import *
 
 def init(g: nx.DiGraph()):
     """Initializing GUI to be called from outside the class"""
-    gui = GUI(nx.DiGraph())
+    gui = GUI(g)
     gui.init_gui()
 
 
@@ -24,22 +24,22 @@ def checkMinMax(graph: nx.DiGraph()):
     for i in graph.nodes:
         # define min max values to present the graph
         if min_value['x'] < i['pos'].getX():
-            min_value['x'] = i['pos'].getX()
-        if min_value['y'] < i['pos'].getY():
-            min_value['y'] = i['pos'].getY()
+            min_value['x'] = i['pos'].x
+        if min_value['y'] < i['pos'].y:
+            min_value['y'] = i['pos'].y
 
-        if max_value['x'] > i['pos'].getX():
-            max_value['x'] = i['pos'].getX()
-        if max_value['y'] > i['pos'].getY():
-            max_value['y'] = i['pos'].getY()
+        if max_value['x'] > i['pos'].x:
+            max_value['x'] = i['pos'].x
+        if max_value['y'] > i['pos'].y:
+            max_value['y'] = i['pos'].עy
 
     return min_value, max_value
 
 
-def normalize_x(screen_x_size, currNodeVal) -> float:
+def normalize_x(graph: nx.DiGraph , screen_x_size, currNodeVal) -> float:
     """Normalize the x value according to the current size of the screen"""
-    return (currNodeVal - Node.min_value['x']) / (
-            Node.max_value['x'] - Node.min_value['x']) * (screen_x_size - 20) + 10
+    return (currNodeVal - checkMinMax(graph).min_value['x']) / (
+            checkMinMax(graph).max_value['x'] - checkMinMax(graph).min_value['x']) * (screen_x_size - 20) + 10
 
 
 def normalize_y(screen_y_size, currNodeVal) -> float:
@@ -96,7 +96,7 @@ class GUI:
 
     def draw_graph_nodes(self, screen, screen_x_size, screen_y_size):
         """Plot the nodes of the graph, using normalization mentioned above. """
-        for node in self.graph.g.get_all_v().values():
+        for node in self.graph.nodes:
             x = node.get_x()
             y = node.get_y()
 
@@ -118,12 +118,15 @@ class GUI:
     def draw_one_edge(self, screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, colour):
         """Function to plot a single edge according to all the data received by the function."""
         # Setting variables for readability and for effectiveness of the code
-        src_node = self.graph.get_graph().getNode(edgeSrcID)
-        src_node_x = src_node.get_x()
-        src_node_y = src_node.get_y()
-        dest_node = self.graph.get_graph().getNode(edgeDestID)
-        dest_node_x = dest_node.get_x()
-        dest_node_y = dest_node.get_y()
+        src_node = self.graph.nodes[edgeSrcID]
+        pos_src = self.graph.nodes[edgeSrcID]['pos']
+        pos_src_x = pos_src.x
+        pos_src_y= pos_src.y
+
+        dest_node = self.graph.nodes[edgeDestID]
+        pos_dest = self.graph.nodes[edgeDestID]['pos']
+        pos_dest_x = pos_dest.x
+        pos_dest_y = pos_dest.y
 
         # Normailizing
         src_node_x = normalize_x(screen_x_size, src_node_x)
@@ -166,12 +169,24 @@ class GUI:
 
     def draw_graph_edges(self, screen, screen_x_size, screen_y_size):
         """Function to iterate and plot all edges of the graph """
+
         for edgeSrcID in self.graph.edges:
-            try:
-                for edgeDestID in self.graph.edges
-                    self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, (0, 0, 0))
-            except:
-                continue
+            #curr = self.graph.edges(edgeSrcID)
+            self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID[0], edgeSrcID[1], (0, 0, 0))
+
+            #   dist_pokemon_src = graph.nodes[pok.get_node_src()]['pos']
+                #for edgeDestID in self.graph.out_edges(edgeSrcID.dataG.edges.data("weight", default=1)):
+
+
+
+        # def draw_graph_edges(self, screen, screen_x_size, screen_y_size):
+        #     """Function to iterate and plot all edges of the graph """
+        #     for edgeSrcID in self.graph.get_graph().get_all_v().keys():
+        #         try:
+        #             for edgeDestID in self.graph.get_graph().all_out_edges_of_node(edgeSrcID).keys():
+        #                 self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, (0, 0, 0))
+        #         except:
+        #             continue
 
     def redraw(self, screen, screen_x_size, screen_y_size):  ######dont sure we need it
         """After a change has been made, a method to replot the graph and the buttons"""
