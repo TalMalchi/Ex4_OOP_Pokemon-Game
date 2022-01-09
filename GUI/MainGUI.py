@@ -13,24 +13,23 @@ def init(g: nx.DiGraph()):
     """Initializing GUI to be called from outside the class"""
     gui = GUI(g)
     gui.init_gui()
-    return gui
 
 
-def checkMinMax(graph: nx.DiGraph()):  # graph: nx.DiGraph()):
+def checkMinMax(graph: nx.DiGraph()):
     # static variables, for GUI
-    min_value = {'x': -sys.maxsize, 'y': -sys.maxsize, 'z': 0}
-    max_value = {'x': sys.maxsize, 'y': sys.maxsize, 'z': 0}
-    for i in graph.nodes():
+    min_value = {'x': -sys.maxsize, 'y': -sys.maxsize, 'z': -sys.maxsize}
+    max_value = {'x': sys.maxsize, 'y': sys.maxsize, 'z': sys.maxsize}
+    for i in graph.nodes:
         # define min max values to present the graph
-        if min_value['x'] < graph.nodes()[i]['pos'].getX():
-            min_value['x'] = graph.nodes()[i]['pos'].getX()
-        if min_value['y'] < graph.nodes()[i]['pos'].getY():
-            min_value['y'] = graph.nodes()[i]['pos'].getY()
+        if min_value['x'] < i['pos'].getX():
+            min_value['x'] = i['pos'].getX()
+        if min_value['y'] < i['pos'].getY():
+            min_value['y'] = i['pos'].getY()
 
-        if max_value['x'] > graph.nodes()[i]['pos'].getX():
-            max_value['x'] = graph.nodes()[i]['pos'].getX()
-        if max_value['y'] > graph.nodes()[i]['pos'].getY():
-            max_value['y'] = graph.nodes()[i]['pos'].getY()
+        if max_value['x'] > i['pos'].getX():
+            max_value['x'] = i['pos'].getX()
+        if max_value['y'] > i['pos'].getY():
+            max_value['y'] = i['pos'].getY()
 
     return min_value, max_value
 
