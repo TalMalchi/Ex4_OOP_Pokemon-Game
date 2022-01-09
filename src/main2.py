@@ -3,6 +3,8 @@ import time
 from DataInput import *
 from src.Algorithms import *
 from timeStampsDemo import *
+from GUI.MainGUI import init
+
 
 EPS = 0.01
 
@@ -14,6 +16,8 @@ if __name__ == '__main__':
     client = Client()  # init of Client
     client.start_connection(HOST, PORT)  # init connection to server
     graph = loadGraph(client.get_graph())  # load the graph (as instance of networkx graph)
+    init(graph)
+
     pokLst = loadAllPokemons(client.get_pokemons(), graph)  # load Pokemon list
     caseInfo = json.loads(client.get_info())
     numOfAgents = caseInfo['GameServer']['agents']
