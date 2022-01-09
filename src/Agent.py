@@ -41,12 +41,12 @@ class Agent:
         self.speed = jsonStr['speed']
         self.pos = Point(string=jsonStr['pos'])
 
-    def __str__(self):
+    def _str_(self):
         return "{id: " + str(self.id) + ", value: " + str(self.value) + ", src: " + str(self.src) + ", dest: " + str(
             self.dest) + ", speed: " + str(self.speed) + ", pos: " + str(self.pos) + ", path: " + str(self.path)
 
-    def __repr__(self):
-        return self.__str__()
+    def _repr_(self):
+        return self._str_()
 
     def get_previous_node_time(self):
         """the time that passed from the start of travel from previous node"""
@@ -212,7 +212,7 @@ class Agent:
     #
     #     qa = (m ** 2) + 1
     #     qb = (2 * b * m) - (2 * m * yStart) - (2 * xStart)
-    #     qc = (b ** 2) - (2 * yStart * b) + (xStart ** 2) - (dist ** 2)
+    #     qc = (b * 2) - (2 * yStart * b) + (xStart * 2) - (dist ** 2)
     #
     #     x1, x2 = quadratic(qa, qb, qc)
     #     y1 = m * x1 + b
@@ -225,6 +225,6 @@ class Agent:
     #     else:
     #         return p2
 
-    def __eq__(self, other):
+    def _eq_(self, other):
         """for checking test of same Agents"""
         return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src and self.speed == other.speed and self.pos == other.pos

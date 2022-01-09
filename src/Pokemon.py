@@ -21,6 +21,7 @@ class Pokemon:
         self.node_src = None  # ID of node
         self.node_dest = None  # ID of node
         self.findSrcDest(graph)
+        self.assigned = False
 
     # def parsePokemon(self, jsonObj):  # parse string pokemon to pokemon object
     #     """Function receives json object of pokemon and parses it, assigning values to current pokemon"""

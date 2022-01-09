@@ -13,7 +13,7 @@ def assignAgentSrcNodes(numOfAgents: int, client: Client, pokLst: list, graph: n
         # if the amount of agents is equals to the pokemon amount, we will put each agent next to each pokemon
         for i in range(numOfAgents):
             client.add_agent("{\"id\":" + str(pokLst[i].node_src) + "}")
-            return numOfAgents
+        return numOfAgents
     elif numOfAgents < len(pokLst):  # else, we will put the agent next to the pokemon with the highest value
         for i in range(numOfAgents):
             client.add_agent("{\"id\":" + str(pokLst[i].node_src) + "}")
@@ -47,14 +47,15 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
             if currMinLength < shortestPathDist:
                 shortestPathDist = currMinLength
                 minIndex = j
-        currMinPath = nx.shortest_path(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[minIndex])  # set the minPath with the minIndex that gives the currMinLength
-        for node in currMinPath:  # add each node in the CurrMinPath to totalShortestPath
-            totalShortestPath.append(node)
-        if minIndex >= 1:
-            totalShortestPath.append(pokLst[minIndex - 1].get_node_dest())
-            totalDist += shortestPathDist + \
-                         graph.get_edge_data(pokLst[minIndex - 1].get_node_src(), pokLst[minIndex - 1].get_node_dest())[
-                             'weight']
+        try:
+            currMinPath = nx.shortest_path(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[minIndex])  # set the minPath with the minIndex that gives the currMinLength
+            for node in currMinPath:  # add each node in the CurrMinPath to totalShortestPath
+                totalShortestPath.append(node)
+            if minIndex >= 1:
+                totalShortestPath.append(pokLst[minIndex - 1].get_node_dest())
+                totalDist += shortestPathDist + graph.get_edge_data(pokLst[minIndex - 1].get_node_src(), pokLst[minIndex - 1].get_node_dest())['weight']
+        except:
+            pass
         copyNodesToVisit.pop(0)
     return totalDist, totalShortestPath
 
@@ -86,7 +87,8 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon)
         tempPokLst.append(pokemon)
 
         # Source nodes of all pokemons to be hypothetically passed
-        srcNodeListToPass = [agentLst[i].getDest()]
+        if agentLst[i].getDest() != -1:
+            srcNodeListToPass = [agentLst[i].getDest()]
         for pok in tempPokLst:
             srcNodeListToPass.append(pok.get_node_src())
 
