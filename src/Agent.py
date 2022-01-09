@@ -7,6 +7,13 @@ from src.Point import Point
 from src.Pokemon import Pokemon
 
 
+def quadratic(a, b, c):  # (self, a, b, c):
+    """Method to calculate the results of a quadratic equation (2 values)"""
+    x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+    x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+    return x1, x2
+
+
 class Agent:
 
     def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0, pos: Point = Point(), jsonStr=None):
@@ -130,6 +137,7 @@ class Agent:
         self.pokList.append(pok)
 
     def popHeadPokLst(self) -> Pokemon:
+        """function get the head of pokList"""
         return self.pokList.pop(0)
 
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list):
@@ -169,12 +177,6 @@ class Agent:
                     timeStamps.append((timeToNextNode, self.id))
         sorted(timeStamps, key=lambda x: x[0])
         return timeStamps
-
-    def quadratic(self, a, b, c):
-        """Method to calculate the results of a quadratic equation (2 values)"""
-        x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
-        x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
-        return x1, x2
 
     def distanceFromSrcNode(self, graph: nx.DiGraph):
         timeFromStart = time.time() - self.prevNodeTime
@@ -223,5 +225,5 @@ class Agent:
             return p2
 
     def __eq__(self, other):
-        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src \
-               and self.speed == other.speed and self.pos == other.pos
+        """for checking test of same Agents"""
+        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src and self.speed == other.speed and self.pos == other.pos

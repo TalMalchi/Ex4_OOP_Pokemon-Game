@@ -12,8 +12,8 @@ def initialTimeStamps(timestamps: list, graph: nx.DiGraph, agent: Agent, toAdd: 
     srcToPokLength = graph.nodes[agent.getPokLst()[0].get_node_src()]['pos'].distance(agent.getPokLst()[0].getPos())  # Compute the distance from the source of the edge the pokemon locate on, to the pokemon
     percentageOfEdge = srcToPokLength / wholeEdgeLength  # Find the precentage of the length of the edge that the pokémon locate at(fro src to pokemon) from the whole edge.
     timeSrcToPok = percentageOfEdge * (graph.get_edge_data(pokSrc, pokDest)['weight'] / agent.get_speed())
-    timestamps.append((toAdd + timeSrcToPok, agent.getId()))
-    sorted(timestamps, key=lambda x: x[0])
+    timestamps.append((toAdd + timeSrcToPok, agent.getId()))  # Add the time we computed to timestamps list
+    sorted(timestamps, key=lambda x: x[0])  # Sort the timestemps list by the first element of tuple
     return timestamps
 
 
@@ -41,7 +41,7 @@ def pokemonTimeStamps(timestamps: list, graph: nx.DiGraph, agent: Agent, idPokDe
         currToDestLength = agent.getPos().distance(graph.nodes[agentPath[1]]['pos'])  # We will compute the distance between the agent to the end of the edge
     percentageOfEdge = currToDestLength / wholeEdgeLength  # Find the precentage of the length from agent to next pokemon or from agent to dest node from the whole edge.
     timePokToDest = percentageOfEdge * (graph.get_edge_data(agentPath[0], agentPath[1])['weight'] / agent.get_speed())
-    timestamps.append((timePokToDest, agent.getId()))
+    timestamps.append((timePokToDest, agent.getId()))  # Add the time we computed to timestamps list
     # Got to path[1]. Need to get to next nodes + pokemon
 
     for nodeId in range(1, len(agentPath) - 2):
