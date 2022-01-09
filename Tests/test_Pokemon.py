@@ -9,7 +9,7 @@ class test_Pokemon(TestCase):
     def test_parse_pok(self):
         graph = nx.DiGraph()
         pok = Pokemon(graph)
-        s = json.loads('{"Pokemons":[{"Pokemon":{"value":5.0,"type":-1,"pos":"35.197656770719604,32.10191878639921,0.0"}}]}')['Pokemons'][0]['Pokemon']
+        s = json.loads('{"Pokemons":[{"Pokemon":{"value":5.0,"type":-1,"pos":"35.197656770719604,32.10191878639921,0.0"}}]}')['Pokemons'][0]
         pok.parsePokemon(s)
         pok_tocheck = Pokemon(graph, 5.0, -1, Point(35.197656770719604, 32.10191878639921, 0.0))
         self.assertEqual(pok, pok_tocheck)

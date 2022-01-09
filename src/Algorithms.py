@@ -52,9 +52,7 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
             totalShortestPath.append(node)
         if minIndex >= 1:
             totalShortestPath.append(pokLst[minIndex - 1].get_node_dest())
-            totalDist += shortestPathDist + \
-                         graph.get_edge_data(pokLst[minIndex - 1].get_node_src(), pokLst[minIndex - 1].get_node_dest())[
-                             'weight']
+            totalDist += shortestPathDist + graph.get_edge_data(pokLst[minIndex - 1].get_node_src(), pokLst[minIndex - 1].get_node_dest())['weight']
         copyNodesToVisit.pop(0)
     return totalDist, totalShortestPath
 
@@ -85,7 +83,9 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon)
         tempPokLst.append(pokemon)
 
         # Source nodes of all pokemons to be hypothetically passed
-        srcNodeListToPass = [agentLst[i].getDest()]
+        srcNodeListToPass = []
+        if agentLst[i].getDest() != -1:
+            srcNodeListToPass = [agentLst[i].getDest()]
         for pok in tempPokLst:
             srcNodeListToPass.append(pok.get_node_src())
 
