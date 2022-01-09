@@ -8,6 +8,7 @@ from src.Pokemon import Pokemon
 
 
 def loadGraph(stringGraph):  #have test
+    """load the graph- Nodes and Edges into graph object """
     jsonGraph = json.loads(stringGraph)
     graph = nx.DiGraph()
     for node in jsonGraph["Nodes"]:
@@ -20,6 +21,7 @@ def loadGraph(stringGraph):  #have test
 
 
 def loadAllPokemons(pokemons, graph: nx.DiGraph): #have test
+    """loads all the pokemons into pokemon object"""
     pokLst = []
     jsonTemp = json.loads(pokemons)
     for i in range(len(jsonTemp['Pokemons'])):
@@ -56,6 +58,7 @@ def appendToAllPokemons(pokemons, graph: nx.DiGraph, pokLst: list):
 
 
 def loadAllAgents(agents): #have test
+    """ loads all the pokemons into agent """
     agentLst = []
     jsonTemp = json.loads(agents)
     for i in range(len(jsonTemp['Agents'])):
