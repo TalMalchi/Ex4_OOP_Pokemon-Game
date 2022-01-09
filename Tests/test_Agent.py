@@ -13,9 +13,7 @@ class test_Agent(TestCase):
 
     def test_parse_agent(self):  # TODO
         ag = Agent()
-        s1 = json.loads(
-            '{"Agents":[{"Agent":{"id":0,"value":0.0,"src":0,"dest":1,"speed":1.0,"pos":"35.18753053591606,32.10378225882353,0.0"}}]}')[
-            'Agents'][0]['Agent']
+        s1 = json.loads('{"Agents":[{"Agent":{"id":0,"value":0.0,"src":0,"dest":1,"speed":1.0,"pos":"35.18753053591606,32.10378225882353,0.0"}}]}')['Agents'][0]['Agent']
         ag.parseAgent(s1)
         agent_toCheck = Agent(0, 0.0, 0, 1, 1.0, Point(35.18753053591606, 32.10378225882353, 0.0))
         self.assertEqual(ag, agent_toCheck)

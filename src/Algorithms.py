@@ -40,15 +40,15 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
     minIndex = 0
     while len(copyNodesToVisit) != 1:
         for j in range(1, len(copyNodesToVisit)):
-            if len(totalShortestPath) == 0:
+            if len(totalShortestPath) == 0:  # if there is just one edge in the path, we will set it to the CurrminLen
                 currMinLength = nx.shortest_path_length(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[j])
-            else:
+            else:  # else , we will check the shortestPath between every two nodes, and will update the minCurrLen everytime
                 currMinLength = nx.shortest_path_length(graph, source=totalShortestPath[-1], target=copyNodesToVisit[j])
             if currMinLength < shortestPathDist:
                 shortestPathDist = currMinLength
                 minIndex = j
-        currMinPath = nx.shortest_path(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[minIndex])
-        for node in currMinPath:
+        currMinPath = nx.shortest_path(graph, source=copyNodesToVisit[0], target=copyNodesToVisit[minIndex])  # set the minPath with the minIndex that gives the currMinLength
+        for node in currMinPath:  # add each node in the CurrMinPath to totalShortestPath
             totalShortestPath.append(node)
         if minIndex >= 1:
             totalShortestPath.append(pokLst[minIndex - 1].get_node_dest())
@@ -60,9 +60,10 @@ def tsp(graph: nx.DiGraph, srcNodesToVisit: list, pokLst: list):
 
 
 def sortPokLst(graph: nx.DiGraph, agent: Agent, oldPokLst: list):
+    """"sort the PokLst according to Agent's path"""
     agentPath = agent.getPath()
     newPokLst = []
-    for i in range(len(agentPath) - 1):
+    for i in range(len(agentPath) - 1):  # go all over agent's path and sort according to src and dest
         currSrc = agentPath[i]
         currDest = agentPath[i + 1]
         for pok in oldPokLst:
@@ -89,16 +90,17 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon)
         for pok in tempPokLst:
             srcNodeListToPass.append(pok.get_node_src())
 
+        # check the sortestPath for each agent on the same pokemonLst
         tempShortDist, tempShortPath = tsp(graph, srcNodeListToPass, tempPokLst)
-        if tempShortDist < minDist:
+        if tempShortDist < minDist:  # update the minDist each time
             minDist = tempShortDist
             minPath = tempShortPath
             minAgentId = agentLst[i].getId()
             minPokLst = tempPokLst
     minPath.insert(0, agentLst[minAgentId].getSrc())
     agentLst[minAgentId].setPath(minPath)
-    sortedPokLst = sortPokLst(graph, agentLst[minAgentId], minPokLst)
-    agentLst[minAgentId].setPokLst(sortedPokLst)
+    sortedPokLst = sortPokLst(graph, agentLst[minAgentId], minPokLst)  # return the shortestPath
+    agentLst[minAgentId].setPokLst(sortedPokLst)  # up
 
     # pokIndex = 0
     # for i in range(len(minPath) - 1):
