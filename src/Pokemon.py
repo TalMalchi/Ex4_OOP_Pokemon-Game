@@ -7,6 +7,7 @@ EPS = 0.000001
 
 class Pokemon:
 
+
     def __init__(self, graph: nx.DiGraph, value=0, type: int = 0, pos: Point = Point(), jsonStr=None):
         """Creates a new Pokemon (usually from string), calculates the src and dest nodes of the edge on which the
         pokemon is located (the 'findSrcDest' fucntion)."""

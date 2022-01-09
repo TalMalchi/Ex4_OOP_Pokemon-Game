@@ -166,9 +166,9 @@ class GUI:
 
     def draw_graph_edges(self, screen, screen_x_size, screen_y_size):
         """Function to iterate and plot all edges of the graph """
-        for edgeSrcID in self.graph.get_graph().get_all_v().keys():
+        for edgeSrcID in self.graph.edges:
             try:
-                for edgeDestID in self.graph.get_graph().all_out_edges_of_node(edgeSrcID).keys():
+                for edgeDestID in self.graph.edges
                     self.draw_one_edge(screen, screen_x_size, screen_y_size, edgeSrcID, edgeDestID, (0, 0, 0))
             except:
                 continue
@@ -191,7 +191,7 @@ class GUI:
     def init_gui(self):
         pg.init()
         clock = pg.time.Clock()
-        pg.display.set_caption('Graph UI')
+        pg.display.set_caption('Pokémon Game')
         screen_x_size = 800  # Default size of the window
         screen_y_size = 600
         screen = pg.display.set_mode((screen_x_size, screen_y_size), HWSURFACE | DOUBLEBUF | RESIZABLE)
@@ -199,9 +199,9 @@ class GUI:
 
         # Initializing buttons
         self.button_load = Button("Load", (0, 0))
-        self.button_center = Button("Center Point", ((self.button_load.size[0] + self.button_load.x + 3), 0))
-        self.button_short_path = Button("Shortest Path", ((self.button_center.size[0] + self.button_center.x + 3), 0))
-        self.button_TSP = Button("TSP", ((self.button_short_path.size[0] + self.button_short_path.x + 3), 0))
+        #self.button_center = Button("Center Point", ((self.button_load.size[0] + self.button_load.x + 3), 0))
+        #self.button_short_path = Button("Shortest Path", ((self.button_center.size[0] + self.button_center.x + 3), 0))
+        #self.button_TSP = Button("TSP", ((self.button_short_path.size[0] + self.button_short_path.x + 3), 0))
         start_timer = self.redraw(screen, screen_x_size, screen_y_size)
 
         # Initializing flags for future use

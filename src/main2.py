@@ -1,6 +1,7 @@
 import time
 
 from DataInput import *
+from GUI.MainGUI import init
 from src.Algorithms import *
 from timeStampsDemo import *
 
