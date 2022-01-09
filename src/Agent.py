@@ -7,9 +7,16 @@ from src.Point import Point
 from src.Pokemon import Pokemon
 
 
+def quadratic(a, b, c):  # (self, a, b, c):
+    """Method to calculate the results of a quadratic equation (2 values)"""
+    x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+    x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
+    return x1, x2
+
+
 class Agent:
 
-    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0,pos: Point = Point(), jsonStr=None):
+    def __init__(self, id: int = 0, value: float = 0, src: int = 0, dest: int = 0, speed: float = 0, pos: Point = Point(), jsonStr=None):
         self.pokList = []
         if jsonStr is not None:
             self.parseAgent(jsonStr)
@@ -130,6 +137,7 @@ class Agent:
         self.pokList.append(pok)
 
     def popHeadPokLst(self) -> Pokemon:
+        """function get the head of pokList"""
         return self.pokList.pop(0)
 
     def addTimeStamps(self, graph: nx.DiGraph, timeStamps: list):
@@ -170,12 +178,6 @@ class Agent:
         sorted(timeStamps, key=lambda x: x[0])
         return timeStamps
 
-    def quadratic(self, a, b, c):
-        """Method to calculate the results of a quadratic equation (2 values)"""
-        x1 = ((-b) + math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
-        x2 = ((-b) - math.sqrt((b ** 2) - (4 * a * c))) / (2 * a)
-        return x1, x2
-
     def distanceFromSrcNode(self, graph: nx.DiGraph):
         timeFromStart = time.time() - self.prevNodeTime
         lengthOfEdge = graph.nodes[self.path[0]]['pos'].distance(graph.nodes[self.path[1]]['pos'])
@@ -211,7 +213,7 @@ class Agent:
         qb = (2 * b * m) - (2 * m * yStart) - (2 * xStart)
         qc = (b ** 2) - (2 * yStart * b) + (xStart ** 2) - (dist ** 2)
 
-        x1, x2 = self.quadratic(qa, qb, qc)
+        x1, x2 = quadratic(qa, qb, qc)
         y1 = m * x1 + b
         y2 = m * x2 + b
         p1 = Point(x1, y1)
@@ -223,5 +225,5 @@ class Agent:
             return p2
 
     def __eq__(self, other):
-        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src \
-               and self.speed == other.speed and self.pos == other.pos
+        """for checking test of same Agents"""
+        return self.id == other.id and self.value == other.value and self.dest == other.dest and self.src == other.src and self.speed == other.speed and self.pos == other.pos

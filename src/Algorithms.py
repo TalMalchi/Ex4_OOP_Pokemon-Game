@@ -1,5 +1,4 @@
 import random
-import sys
 
 from src.Pokemon import Pokemon
 from src.client import Client
@@ -73,7 +72,7 @@ def sortPokLst(graph: nx.DiGraph, agent: Agent, oldPokLst: list):
     return newPokLst
 
 
-def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon, timeStamps: list):
+def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon):  # , timeStamps: list):
     """Chooses the best agent to allocate the new pokemon to, using TSP. Returns the ID of the agent which was chosen
     for the new pokemon"""
     minDist = sys.maxsize
@@ -85,7 +84,7 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
         tempPokLst = agentLst[i].getPokLst()
         tempPokLst.append(pokemon)
 
-        # Source nodes of all pokemons to be passed (hypothetically)
+        # Source nodes of all pokemons to be hypothetically passed
         srcNodeListToPass = [agentLst[i].getDest()]
         for pok in tempPokLst:
             srcNodeListToPass.append(pok.get_node_src())
@@ -101,13 +100,11 @@ def assignNewPokemonToAgent(graph: nx.DiGraph, agentLst: list, pokemon: Pokemon,
     sortedPokLst = sortPokLst(graph, agentLst[minAgentId], minPokLst)
     agentLst[minAgentId].setPokLst(sortedPokLst)
 
-    pokIndex = 0
-    for i in range(len(minPath)):
-        if sortedPokLst[0].get_node_dest() == minPath[i]:
-            pokIndex = i
-            break
+    # pokIndex = 0
+    # for i in range(len(minPath) - 1):
+    #     if sortedPokLst[0].get_node_src() == minPath[i] and sortedPokLst[0].get_node_dest() == minPath[i + 1]:
+    #         pokIndex = i
+    #         break
 
-    timeStamps = pokemonTimeStamps(timeStamps, graph, agentLst[minAgentId], pokIndex)
-    return agentLst, timeStamps
-
-#### check about last index
+    # timeStamps = pokemonTimeStamps(timeStamps, graph, agentLst[minAgentId], pokIndex)
+    return agentLst  # , timeStamps

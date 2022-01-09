@@ -33,7 +33,7 @@ if __name__ == '__main__':
     while client.is_running() == 'true':
 
         tempTime = time.time() - startTime
-        if abs(tempTime - (timeStamps[0][0] + 0.0)) < 0.02:
+        if abs(tempTime - (timeStamps[0][0] + 0.01)) < 0.002:  # + 0.001)) < 0.001:
             timeStamps.pop(0)
             client.move()
 
@@ -54,22 +54,26 @@ if __name__ == '__main__':
                 print(pokLst)
                 print()
 
+                nodeVisited = False
                 if agentLst[i].getDest() == -1:  # agent arrived at intersection of nodes
                     poppedNode = agentLst[i].removePathHead()  # node which was the src node of the agent's previous edge
                     stringToSend = '{"agent_id":' + str(agentLst[i].getId()) + ', "next_node_id":' + str(agentLst[i].getPath()[1]) + '}'
                     client.choose_next_edge(stringToSend)  # sending the agent towards the next node in its path
                     agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
                     agentLst[i].setPassedPokPos(graph.nodes[poppedNode]['pos'])
-                    if len(agentLst[i].getPath()) >= 2:
-                        agentLst[i].setSrc(agentLst[i].getPath()[0])
-                        agentLst[i].setDest(agentLst[i].getPath()[1])
+                    if len(agentLst[i].getPath()) >= 2:  # If the path of the agent is at least in length 2
+                        agentLst[i].setSrc(agentLst[i].getPath()[0])  # Than the first element will be the source
+                        agentLst[i].setDest(agentLst[i].getPath()[1])  # And the second element will be the destination
+                    nodeVisited = True
 
-                if agentLst[i].getPos().distance(agentLst[i].getPokLstHead().pos) < 0.002:
+                if not nodeVisited and agentLst[i].getPos().distance(agentLst[i].getPokLstHead().pos) < 0.02:  # 0.02
                     agentLst[i].popHeadPokLst()
                     agentLst[i].set_previous_node_time(time.time())  # set time and place of change of speed
                     agentLst[i].setPassedPokPos(agentLst[i].getPos())
                     # A pokemon was eaten, a new pokemon exists on the graph
                     pokLst = appendToAllPokemons(client.get_pokemons(), graph, pokLst)  # update pokemon list
+
+                    print("totalPokList = " + str(loadAllPokemons(client.get_pokemons(), graph)))
 
                     # assign new pokemon
                     startTime = time.time()

@@ -83,4 +83,4 @@ class Pokemon:
         return self.node_dest
 
     def __eq__(self, other):
-        return self.pos==other.pos and self.type==other.type and self.value==other.value
+        return self.pos == other.pos and self.type == other.type and self.value == other.value
