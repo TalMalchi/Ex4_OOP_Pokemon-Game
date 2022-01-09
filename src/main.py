@@ -82,6 +82,7 @@ if __name__ == '__main__':
                         agentLst = assignNewPokemonToAgent(graph, agentLst, pokLst[-1])
 
                 time.sleep(0.1)
+                print(client.get_info())
     except:
         print(client.get_info())
 
