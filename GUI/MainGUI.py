@@ -238,7 +238,7 @@ class GUI:
         self.redraw()
         pg.display.update()
 
-    def guiHandle(self, running, pokLst: list, agentLst: list, string: str):
+    def guiHandle(self, running, pokLst: list, agentLst: list, jsonStr: str, time_to_end):
         for event in pg.event.get():  # for each event
             if event.type == pg.QUIT or self.button_stop.click(event):  # user closed window
                 running = False
@@ -247,9 +247,9 @@ class GUI:
                 self.screen_x_size = pg.display.Info().current_w
                 self.screen_y_size = pg.display.Info().current_h
         self.redraw(pokLst, agentLst)
-        overallPoint = "Overall points earned by agents: "
-        moveCount = "Total moves performed: "
-        timeRemaining = "Time remaining: "
+        overallPoint = "Overall points earned by agents: " + str(jsonStr['grade'])
+        moveCount = "Total moves performed: " + str(jsonStr['moves'])
+        timeRemaining = "Time remaining: " + time_to_end
         self.display_temp_text(overallPoint, [5, self.button_stop.size[1] + 25])
         self.display_temp_text(moveCount, [5, self.button_stop.size[1] + 40])
         self.display_temp_text(timeRemaining, [5, self.button_stop.size[1] + 55])

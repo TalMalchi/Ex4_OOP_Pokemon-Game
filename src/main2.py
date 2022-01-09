@@ -1,10 +1,8 @@
 import time
 
 from DataInput import *
-from src.Algorithms import *
-from timeStampsDemo import *
 from GUI.MainGUI import init
-
+from src.Algorithms import *
 
 EPS = 0.01
 
@@ -37,7 +35,7 @@ if __name__ == '__main__':
         client.move()
         tempAgentLst = loadAllAgents(client.get_agents())  # temporarily load agents from client
 
-        GUIRunning = gui.guiHandle(GUIRunning, pokLst, agentLst)
+        GUIRunning = gui.guiHandle(GUIRunning, pokLst, agentLst, json.loads(client.get_info())['GameServer'], client.time_to_end())
 
         for i in range(len(agentLst)):
             agentLst[i].set_speed(tempAgentLst[i].speed)  # update current agents speed and pos
@@ -63,3 +61,5 @@ if __name__ == '__main__':
                 # assign new pokemon
                 agentLst = assignNewPokemonToAgent(graph, agentLst, pokLst[-1])
             time.sleep(0.1)
+
+        print(client.get_info())
